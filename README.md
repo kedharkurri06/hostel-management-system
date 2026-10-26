@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HostelHub Pro - Campus Residence Portal (MERN Stack)
 
 A complete full-stack **MERN (MongoDB, Express.js, React, Node.js)** migration of the Hostel Hub Campus Residence & Room Maintenance application.
@@ -172,3 +173,6 @@ The compiled assets will be output to `client/dist/`.
 2. **JWT Authorization**: Requests to sensitive endpoints (`PATCH /api/complaints/:id`, `PATCH /api/menu/:id`, `POST /api/notices`, etc.) verify bearer tokens and warden roles.
 3. **Data Sanitization**: Defensive request validation ensures allowed enum values and sanitizes strings against basic injection.
 4. **Secret Isolation**: Secrets reside purely in `server/.env` and are strictly excluded via `.gitignore`.
+=======
+# hostel-management-system
+>>>>>>> 08aa0ad66c1a0d3a06e978b58131e2632e8dc09a
