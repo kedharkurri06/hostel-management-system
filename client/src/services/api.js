@@ -77,7 +77,10 @@ export const api = {
 
   // Wardens Directory
   wardens: {
-    get: () => request('/wardens')
+    get: () => request('/wardens'),
+    create: (data) => request('/wardens', { method: 'POST', body: data }),
+    update: (id, updates) => request(`/wardens/${id}`, { method: 'PATCH', body: updates }),
+    delete: (id) => request(`/wardens/${id}`, { method: 'DELETE' })
   },
 
   // Notice Board
@@ -86,6 +89,24 @@ export const api = {
     create: (noticeData) => request('/notices', { method: 'POST', body: noticeData }),
     update: (id, updates) => request(`/notices/${id}`, { method: 'PATCH', body: updates }),
     delete: (id) => request(`/notices/${id}`, { method: 'DELETE' })
+  },
+
+  // Gate Passes
+  gatePasses: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams();
+      if (params.status && params.status !== 'All') query.append('status', params.status);
+      if (params.type && params.type !== 'All') query.append('type', params.type);
+      if (params.search) query.append('search', params.search);
+      if (params.page) query.append('page', params.page);
+      if (params.limit) query.append('limit', params.limit);
+      const qs = query.toString();
+      return request(`/gatepasses${qs ? `?${qs}` : ''}`);
+    },
+    getById: (id) => request(`/gatepasses/${id}`),
+    create: (data) => request('/gatepasses', { method: 'POST', body: data }),
+    review: (id, updates) => request(`/gatepasses/${id}`, { method: 'PATCH', body: updates }),
+    delete: (id) => request(`/gatepasses/${id}`, { method: 'DELETE' })
   },
 
   // Dashboard Stats

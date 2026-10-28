@@ -6,6 +6,7 @@ const Menu = require('../models/Menu');
 const Notice = require('../models/Notice');
 const Warden = require('../models/Warden');
 const Staff = require('../models/Staff');
+const GatePass = require('../models/GatePass');
 
 // Seed Data directly migrated from original data.js
 const menuSeed = [
@@ -220,16 +221,11 @@ const seedDB = async () => {
     await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
     console.log('✅ Connected to MongoDB for seeding');
 
-    // 1. Seed Users (idempotent: findOneAndUpdate with upsert)
+    // 1. Seed Users (idempotent: find or create, never reset existing passwords)
     const adminEmail = 'warden@hostelhub.edu';
     let adminUser = await User.findOne({ email: adminEmail });
     if (!adminUser) {
-      adminUser = await User.create({
-        name: 'Head Warden Admin',
-        email: adminEmail,
-        password: 'WardenPass123!',
-        role: 'warden'
-      });
+      adminUser = await User.create({ name: 'Head Warden Admin', email: adminEmail, password: 'WardenPass123!', role: 'warden' });
       console.log(`✅ Created default warden user: ${adminEmail} / WardenPass123!`);
     } else {
       console.log(`ℹ️ Default warden user already exists: ${adminEmail}`);
@@ -238,15 +234,30 @@ const seedDB = async () => {
     const studentEmail = 'student@hostelhub.edu';
     let studentUser = await User.findOne({ email: studentEmail });
     if (!studentUser) {
-      studentUser = await User.create({
-        name: 'Rahul Sharma',
-        email: studentEmail,
-        password: 'StudentPass123!',
-        role: 'student'
-      });
+      studentUser = await User.create({ name: 'Rahul Sharma', email: studentEmail, password: 'StudentPass123!', role: 'student' });
       console.log(`✅ Created default student user: ${studentEmail} / StudentPass123!`);
     } else {
       console.log(`ℹ️ Default student user already exists: ${studentEmail}`);
+    }
+
+    // Demo account: VTU28892 (student) — as requested
+    const vtuStudentEmail = 'VTU28892@hostelhub.edu';
+    let vtuStudent = await User.findOne({ email: vtuStudentEmail.toLowerCase() });
+    if (!vtuStudent) {
+      vtuStudent = await User.create({ name: 'VTU Student (28892)', email: vtuStudentEmail.toLowerCase(), password: 'VTU28892', role: 'student' });
+      console.log(`✅ Created VTU student demo: ${vtuStudentEmail} / VTU28892`);
+    } else {
+      console.log(`ℹ️ VTU student demo already exists: ${vtuStudentEmail}`);
+    }
+
+    // Demo account: warden@vtu (warden) — as requested
+    const vtuWardenEmail = 'warden@vtu.edu';
+    let vtuWarden = await User.findOne({ email: vtuWardenEmail });
+    if (!vtuWarden) {
+      vtuWarden = await User.create({ name: 'VTU Warden Admin', email: vtuWardenEmail, password: 'warden@vtu', role: 'warden' });
+      console.log(`✅ Created VTU warden demo: ${vtuWardenEmail} / warden@vtu`);
+    } else {
+      console.log(`ℹ️ VTU warden demo already exists: ${vtuWardenEmail}`);
     }
 
     // 2. Seed Menus

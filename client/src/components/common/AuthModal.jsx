@@ -147,24 +147,24 @@ export const AuthModal = ({ isOpen, onClose }) => {
             border: '1px solid var(--border)'
           }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem', fontWeight: 600 }}>
-              Quick Demo Accounts (from database seed):
+              Demo Accounts:
             </div>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('warden@hostelhub.edu', 'WardenPass123!')}
+                onClick={() => handleDemoLogin('warden@vtu.edu', 'warden@vtu')}
                 className="btn btn-secondary btn-sm"
                 style={{ fontSize: '0.75rem' }}
               >
-                Warden Demo
+                🛡️ Warden (warden@vtu)
               </button>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('student@hostelhub.edu', 'StudentPass123!')}
+                onClick={() => handleDemoLogin('vtu28892@hostelhub.edu', 'VTU28892')}
                 className="btn btn-secondary btn-sm"
                 style={{ fontSize: '0.75rem' }}
               >
-                Student Demo
+                👨‍🎓 Student (VTU28892)
               </button>
             </div>
           </div>

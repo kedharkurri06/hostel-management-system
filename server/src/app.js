@@ -9,6 +9,7 @@ const menuRoutes = require('./routes/menuRoutes');
 const wardenRoutes = require('./routes/wardenRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const gatePassRoutes = require('./routes/gatePassRoutes');
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/wardens', wardenRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/gatepasses', gatePassRoutes);
 
 // 404 Handler
 app.use((req, res) => {

@@ -69,12 +69,13 @@ const login = async (req, res, next) => {
     // If DB is offline/pending, support demo credentials
     if (!isDBConnected()) {
       const lower = email.toLowerCase();
-      if (lower.includes('warden')) {
+      const isWarden = lower.includes('warden') || lower === 'warden@vtu.edu' || password === 'warden@vtu';
+      if (isWarden) {
         const token = generateToken('demo_warden_id');
         return res.json({
           success: true,
           data: {
-            user: { _id: 'demo_warden_id', name: 'Dr. Rajeshwar Rao (Warden)', email, role: 'warden' },
+            user: { _id: 'demo_warden_id', name: 'VTU Warden Admin', email, role: 'warden' },
             token
           },
           source: 'fallback'
@@ -84,7 +85,7 @@ const login = async (req, res, next) => {
         return res.json({
           success: true,
           data: {
-            user: { _id: 'demo_student_id', name: 'Rahul Sharma', email, role: 'student' },
+            user: { _id: 'demo_student_id', name: 'VTU Student (28892)', email, role: 'student' },
             token
           },
           source: 'fallback'
