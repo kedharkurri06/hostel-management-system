@@ -31,10 +31,10 @@ export const Header = ({
         <div className="brand-title" onClick={() => onTabChange('menu')}>
           <div className="brand-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2">
-              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
-              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
-              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
-              <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+              <path d="M10 6h4" /><path d="M10 10h4" /><path d="M10 14h4" /><path d="M10 18h4" />
             </svg>
           </div>
           <div>
@@ -144,12 +144,6 @@ export const Header = ({
         gap: '0.5rem',
         fontSize: '0.8rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#f87171', fontWeight: 600 }}>
-          🛡️ <span>24/7 Hostel Emergency SOS Desk: <strong>+91 94112 00999</strong></span>
-        </div>
-        <div style={{ color: 'var(--text-muted)' }}>
-          Warden Office Hours: 9:00 AM - 6:00 PM | Electrical & Plumbing On-Call Available
-        </div>
       </div>
     </header>
   );

@@ -23,7 +23,7 @@
       <div class="header-top">
         
         <!-- Brand Logo -->
-        <div class="brand-title" onclick="window.switchTab('menu')">
+        <div class="brand-title" data-action="switchTab" data-tab="menu">
           <div class="brand-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
               <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
@@ -49,17 +49,17 @@
 
         <!-- Right Controls -->
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <button onclick="window.openComplaintModal()" class="btn btn-primary" style="font-size: 0.88rem;">
+          <button data-action="openComplaintModal" class="btn btn-primary" style="font-size: 0.88rem;">
             + File Complaint
           </button>
 
           <!-- Role Toggle -->
-          <button id="roleToggleBtn" onclick="window.toggleRole()" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.55rem 0.85rem;">
+          <button id="roleToggleBtn" data-action="toggleRole" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.55rem 0.85rem;">
             <span>Student View</span>
           </button>
 
           <!-- Dark/Light Theme Toggle -->
-          <button id="themeToggleBtn" onclick="window.toggleTheme()" class="btn btn-secondary" style="padding: 0.55rem; border-radius: 50%;" aria-label="Toggle Theme">
+          <button id="themeToggleBtn" data-action="toggleTheme" class="btn btn-secondary" style="padding: 0.55rem; border-radius: 50%;" aria-label="Toggle Theme">
           </button>
         </div>
 
@@ -83,7 +83,7 @@
           🛡️ <span>24/7 Hostel Emergency SOS Desk: <strong>+91 94112 00999</strong></span>
         </div>
         <div style="color: var(--text-muted);">
-          Warden Office Hours: 9:00 AM - 6:00 PM | Electrical & Plumbing On-Call Available
+          Warden Office Hours: 9:00 AM - 6:00 PM | Electrical &amp; Plumbing On-Call Available
         </div>
       </div>
     </header>
@@ -105,14 +105,14 @@
   </div>
 
   <!-- Modal: File New Complaint -->
-  <div id="complaintModal" class="modal-overlay hidden" onclick="window.closeModal('complaintModal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="complaintModal" class="modal-overlay hidden" data-modal-id="complaintModal">
+    <div class="modal-content">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
         <div>
           <span class="badge badge-pending" style="margin-bottom: 0.4rem;">Maintenance Dispatch</span>
           <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0;">Register Room Complaint</h2>
         </div>
-        <button onclick="window.closeModal('complaintModal')" class="btn btn-secondary" style="padding: 0.4rem 0.6rem; border-radius: 50%;">✕</button>
+        <button data-action="closeModal" data-modal="complaintModal" class="btn btn-secondary" style="padding: 0.4rem 0.6rem; border-radius: 50%;">✕</button>
       </div>
 
       <form id="newComplaintForm">
@@ -182,7 +182,7 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" onclick="window.closeModal('complaintModal')">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-action="closeModal" data-modal="complaintModal">Cancel</button>
           <button type="submit" class="btn btn-primary">Submit Complaint</button>
         </div>
       </form>
@@ -190,15 +190,15 @@
   </div>
 
   <!-- Modal: Post Notice Circular -->
-  <div id="noticeModal" class="modal-overlay hidden" onclick="window.closeModal('noticeModal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="noticeModal" class="modal-overlay hidden" data-modal-id="noticeModal">
+    <div class="modal-content">
       <h3 style="margin-bottom: 0.5rem;">Post New Hostel Circular</h3>
       <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Broadcast maintenance schedules or general rules to all residents.</p>
 
       <form id="newNoticeForm">
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">Notice Title *</label>
-          <input type="text" id="noticeTitle" class="input-field" placeholder="e.g. Scheduled Wi-Fi Upgrade in Block A" required />
+          <input type="text" id="noticeTitle" class="input-field" placeholder="e.g. AC Filter Servicing Drive - Block A & B" required />
         </div>
 
         <div class="grid-2" style="margin-bottom: 1rem;">
@@ -228,7 +228,7 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" onclick="window.closeModal('noticeModal')">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-action="closeModal" data-modal="noticeModal">Cancel</button>
           <button type="submit" class="btn btn-primary">Publish Notice</button>
         </div>
       </form>
@@ -236,8 +236,8 @@
   </div>
 
   <!-- Modal: Update Complaint Status -->
-  <div id="updateComplaintModal" class="modal-overlay hidden" onclick="window.closeModal('updateComplaintModal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="updateComplaintModal" class="modal-overlay hidden" data-modal-id="updateComplaintModal">
+    <div class="modal-content">
       <h3 id="editTicketTitle" style="margin-bottom: 0.5rem;">Update Ticket Status</h3>
       <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Change complaint progress status, assign a maintenance staff member, and record resolution details.</p>
 
@@ -262,7 +262,7 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" onclick="window.closeModal('updateComplaintModal')">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-action="closeModal" data-modal="updateComplaintModal">Cancel</button>
           <button type="submit" class="btn btn-primary">Save Status</button>
         </div>
       </form>
@@ -270,8 +270,8 @@
   </div>
 
   <!-- Modal: Edit Food Menu -->
-  <div id="editMealModal" class="modal-overlay hidden" onclick="window.closeModal('editMealModal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="editMealModal" class="modal-overlay hidden" data-modal-id="editMealModal">
+    <div class="modal-content">
       <h3 id="editMealTitle" style="margin-bottom: 0.5rem;">Edit Menu</h3>
       <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Update dishes served for this meal slot. Separate dishes with commas.</p>
 
@@ -292,7 +292,7 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" onclick="window.closeModal('editMealModal')">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-action="closeModal" data-modal="editMealModal">Cancel</button>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
       </form>

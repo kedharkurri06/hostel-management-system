@@ -7,11 +7,11 @@ const {
   updateComplaint,
   deleteComplaint
 } = require('../controllers/complaintController');
-const { protect, optionalAuth, authorize } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
-router.get('/', getComplaints);
-router.get('/:id', getComplaint);
-router.post('/', optionalAuth, createComplaint);
+router.get('/', protect, getComplaints);
+router.get('/:id', protect, getComplaint);
+router.post('/', protect, createComplaint);
 router.patch('/:id', protect, authorize('warden'), updateComplaint);
 router.delete('/:id', protect, authorize('warden'), deleteComplaint);
 

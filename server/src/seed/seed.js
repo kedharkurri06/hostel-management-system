@@ -251,13 +251,39 @@ const seedDB = async () => {
     }
 
     // Demo account: warden@vtu (warden) — as requested
-    const vtuWardenEmail = 'warden@vtu.edu';
-    let vtuWarden = await User.findOne({ email: vtuWardenEmail });
+    const vtuWardenUsername = 'warden@vtu';
+    let vtuWarden = await User.findOne({
+      $or: [
+        { username: vtuWardenUsername },
+        { email: 'warden@vtu.edu' }
+      ]
+    }).select('+password');
     if (!vtuWarden) {
-      vtuWarden = await User.create({ name: 'VTU Warden Admin', email: vtuWardenEmail, password: 'warden@vtu', role: 'warden' });
-      console.log(`✅ Created VTU warden demo: ${vtuWardenEmail} / warden@vtu`);
+      vtuWarden = await User.create({
+        name: 'VTU Warden Admin',
+        username: vtuWardenUsername,
+        email: 'warden@vtu.edu',
+        password: 'warden@123',
+        role: 'warden'
+      });
+      console.log(`✅ Created VTU warden demo: ${vtuWardenUsername} / warden@123`);
     } else {
-      console.log(`ℹ️ VTU warden demo already exists: ${vtuWardenEmail}`);
+      let needsSave = false;
+      if (vtuWarden.username !== vtuWardenUsername) {
+        vtuWarden.username = vtuWardenUsername;
+        needsSave = true;
+      }
+      const matches = await vtuWarden.comparePassword('warden@123');
+      if (!matches) {
+        vtuWarden.password = 'warden@123';
+        needsSave = true;
+      }
+      if (needsSave) {
+        await vtuWarden.save();
+        console.log(`✅ Updated VTU warden credentials to: ${vtuWardenUsername} / warden@123`);
+      } else {
+        console.log(`ℹ️ VTU warden demo already exists: ${vtuWardenUsername}`);
+      }
     }
 
     // 2. Seed Menus

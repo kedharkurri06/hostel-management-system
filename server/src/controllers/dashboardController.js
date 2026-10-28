@@ -29,6 +29,34 @@ const getStats = async (req, res, next) => {
       });
     }
 
+    if (req.user && req.user.role === 'student') {
+      const studentFilter = { submittedBy: req.user._id };
+      const total = await Complaint.countDocuments(studentFilter);
+      const pending = await Complaint.countDocuments({ ...studentFilter, status: 'Pending' });
+      const inProgress = await Complaint.countDocuments({ ...studentFilter, status: 'In Progress' });
+      const resolved = await Complaint.countDocuments({ ...studentFilter, status: 'Resolved' });
+      const emergency = await Complaint.countDocuments({
+        ...studentFilter,
+        priority: 'Emergency',
+        status: { $ne: 'Resolved' }
+      });
+      const resolutionRate = total > 0 ? Math.round((resolved / total) * 100) : 0;
+
+      return res.json({
+        success: true,
+        data: {
+          total,
+          pending,
+          inProgress,
+          resolved,
+          emergency,
+          resolutionRate,
+          categoryBreakdown: [],
+          activeQueue: []
+        }
+      });
+    }
+
     const total = await Complaint.countDocuments();
     const pending = await Complaint.countDocuments({ status: 'Pending' });
     const inProgress = await Complaint.countDocuments({ status: 'In Progress' });

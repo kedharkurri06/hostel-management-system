@@ -3,13 +3,15 @@ import Modal from './Modal';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
-export const AuthModal = ({ isOpen, onClose }) => {
+export const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const { login, register } = useAuth();
   const { addToast } = useToast();
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
+    studentId: '',
     email: '',
+    identifier: '',
     password: ''
   });
   const [submitting, setSubmitting] = useState(false);
@@ -27,22 +29,28 @@ export const AuthModal = ({ isOpen, onClose }) => {
 
     try {
       if (isRegister) {
-        await register(formData.name, formData.email, formData.password);
+        const res = await register(formData.name, formData.email, formData.password, formData.studentId);
         addToast(`Welcome, ${formData.name}! Account registered.`, 'success');
+        if (onLoginSuccess && res.data && res.data.user) {
+          onLoginSuccess(res.data.user.role);
+        }
       } else {
-        await login(formData.email, formData.password);
-        addToast(`Signed in successfully!`, 'success');
+        const res = await login(formData.identifier, formData.password);
+        addToast(`Welcome, ${res.data.user.name}! Signed in successfully.`, 'success');
+        if (onLoginSuccess && res.data && res.data.user) {
+          onLoginSuccess(res.data.user.role);
+        }
       }
       onClose();
     } catch (err) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDemoLogin = (email, password) => {
-    setFormData({ name: '', email, password });
+  const handleDemoFill = (identifier, password) => {
+    setFormData(prev => ({ ...prev, identifier, password }));
   };
 
   return (
@@ -90,49 +98,73 @@ export const AuthModal = ({ isOpen, onClose }) => {
       )}
 
       <form onSubmit={handleSubmit}>
-        {isRegister && (
+        {isRegister ? (
+          <>
+            <div style={{ marginBottom: '1rem' }}>
+              <label className="form-label">Full Name *</label>
+              <input
+                type="text"
+                name="name"
+                className="input-field"
+                placeholder="e.g. JALLURI VENKATA SRIRAM"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label className="form-label">Student ID (Optional)</label>
+              <input
+                type="text"
+                name="studentId"
+                className="input-field"
+                placeholder="e.g. VTU27571"
+                value={formData.studentId}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label className="form-label">Email Address (Optional)</label>
+              <input
+                type="email"
+                name="email"
+                className="input-field"
+                placeholder="e.g. resident@hostelhub.edu"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+          </>
+        ) : (
           <div style={{ marginBottom: '1rem' }}>
             <label className="form-label">
-              Full Name *
+              Student ID or Warden Username *
             </label>
             <input
               type="text"
-              name="name"
+              name="identifier"
               className="input-field"
-              placeholder="e.g. Rahul Sharma"
-              value={formData.name}
+              placeholder="e.g. VTU27571 or warden@vtu"
+              value={formData.identifier}
               onChange={handleChange}
+              autoComplete="username"
               required
             />
           </div>
         )}
 
-        <div style={{ marginBottom: '1rem' }}>
-          <label className="form-label">
-            Email Address *
-          </label>
-          <input
-            type="email"
-            name="email"
-            className="input-field"
-            placeholder="e.g. resident@hostelhub.edu"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div style={{ marginBottom: '1.5rem' }}>
-          <label className="form-label">
-            Password *
-          </label>
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label className="form-label">Password *</label>
           <input
             type="password"
             name="password"
             className="input-field"
-            placeholder="At least 6 characters"
+            placeholder={isRegister ? "At least 6 characters" : "Enter your password"}
             value={formData.password}
             onChange={handleChange}
+            autoComplete="current-password"
             required
           />
         </div>
@@ -152,19 +184,19 @@ export const AuthModal = ({ isOpen, onClose }) => {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('warden@vtu.edu', 'warden@vtu')}
+                onClick={() => handleDemoFill('VTU27571', 'VTU27571')}
+                className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.75rem' }}
+              >
+                👨‍🎓 Student (VTU27571)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoFill('warden@vtu', 'warden@123')}
                 className="btn btn-secondary btn-sm"
                 style={{ fontSize: '0.75rem' }}
               >
                 🛡️ Warden (warden@vtu)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('vtu28892@hostelhub.edu', 'VTU28892')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem' }}
-              >
-                👨‍🎓 Student (VTU28892)
               </button>
             </div>
           </div>

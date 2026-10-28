@@ -15,21 +15,10 @@ const protect = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret');
-    
-    if (typeof decoded.id === 'string' && decoded.id.startsWith('demo_')) {
-      req.user = {
-        _id: decoded.id,
-        name: decoded.id.includes('warden') ? 'Dr. Rajeshwar Rao (Warden)' : 'Rahul Sharma',
-        email: decoded.id.includes('warden') ? 'warden@hostelhub.edu' : 'student@hostelhub.edu',
-        role: decoded.id.includes('warden') ? 'warden' : 'student'
-      };
-      return next();
-    }
-
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'User not found' });
+      return res.status(401).json({ success: false, message: 'User not found or session expired' });
     }
 
     req.user = user;
@@ -48,7 +37,7 @@ const optionalAuth = async (req, res, next) => {
     }
 
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret');
       const user = await User.findById(decoded.id);
       if (user) {
         req.user = user;

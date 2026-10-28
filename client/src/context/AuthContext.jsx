@@ -9,13 +9,9 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem('hostel_user');
     return saved ? JSON.parse(saved) : null;
   });
-  // Active UI view mode ('student' or 'warden')
-  const [role, setRole] = useState(() => {
-    return localStorage.getItem('hostel_role') || (user?.role === 'warden' ? 'warden' : 'student');
-  });
   const [loading, setLoading] = useState(true);
 
-  // Sync token and role to localStorage
+  // Sync token to localStorage
   useEffect(() => {
     if (token) {
       localStorage.setItem('hostel_token', token);
@@ -24,6 +20,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  // Sync user to localStorage
   useEffect(() => {
     if (user) {
       localStorage.setItem('hostel_user', JSON.stringify(user));
@@ -32,49 +29,53 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  useEffect(() => {
-    localStorage.setItem('hostel_role', role);
-  }, [role]);
-
-  // Verify token on mount
+  // Authenticate and verify user profile from backend on mount or when token changes
   useEffect(() => {
     const checkAuth = async () => {
-      if (token) {
+      const storedToken = localStorage.getItem('hostel_token');
+      if (storedToken) {
         try {
           const res = await api.auth.getMe();
-          if (res.success && res.data.user) {
+          if (res.success && res.data && res.data.user) {
             setUser(res.data.user);
-            if (res.data.user.role === 'warden' && !localStorage.getItem('hostel_role')) {
-              setRole('warden');
-            }
+          } else {
+            // Invalid session
+            setToken(null);
+            setUser(null);
           }
         } catch (err) {
-          console.warn('Session expired or invalid token:', err.message);
+          console.warn('Session verification failed, clearing auth:', err.message);
           setToken(null);
           setUser(null);
         }
+      } else {
+        setToken(null);
+        setUser(null);
       }
       setLoading(false);
     };
+
     checkAuth();
   }, [token]);
 
-  const login = async (email, password) => {
-    const res = await api.auth.login(email, password);
+  const login = async (identifier, password) => {
+    const res = await api.auth.login(identifier, password);
     if (res.success && res.data) {
       setToken(res.data.token);
       setUser(res.data.user);
-      setRole(res.data.user.role);
+      localStorage.setItem('hostel_token', res.data.token);
+      localStorage.setItem('hostel_user', JSON.stringify(res.data.user));
     }
     return res;
   };
 
-  const register = async (name, email, password) => {
-    const res = await api.auth.register(name, email, password);
+  const register = async (name, email, password, studentId) => {
+    const res = await api.auth.register(name, email, password, studentId);
     if (res.success && res.data) {
       setToken(res.data.token);
       setUser(res.data.user);
-      setRole('student');
+      localStorage.setItem('hostel_token', res.data.token);
+      localStorage.setItem('hostel_user', JSON.stringify(res.data.user));
     }
     return res;
   };
@@ -82,32 +83,30 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
-    setRole('student');
     localStorage.removeItem('hostel_token');
     localStorage.removeItem('hostel_user');
-    localStorage.setItem('hostel_role', 'student');
+    localStorage.removeItem('hostel_role');
   };
 
-  const toggleRole = () => {
-    const nextRole = role === 'student' ? 'warden' : 'student';
-    setRole(nextRole);
-    return nextRole;
-  };
+  // Role strictly derived from the authenticated database user record
+  const role = user ? user.role : null;
+  const isAuthenticated = !!token && !!user;
+  const isWarden = isAuthenticated && role === 'warden';
+  const isStudent = isAuthenticated && role === 'student';
 
   return (
     <AuthContext.Provider value={{
       token,
       user,
       role,
-      setRole,
       loading,
-      isAuthenticated: !!token && !!user,
-      isWarden: (user && user.role === 'warden') || role === 'warden',
-      hasWardenPrivileges: user && user.role === 'warden',
+      isAuthenticated,
+      isWarden,
+      isStudent,
+      hasWardenPrivileges: isWarden,
       login,
       register,
-      logout,
-      toggleRole
+      logout
     }}>
       {children}
     </AuthContext.Provider>

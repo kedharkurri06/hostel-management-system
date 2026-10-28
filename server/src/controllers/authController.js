@@ -12,9 +12,9 @@ const generateToken = (id) => {
 // POST /api/auth/register
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, studentId } = req.body;
 
-    const missing = validateRequired(['name', 'email', 'password'], req.body);
+    const missing = validateRequired(['name', 'password'], req.body);
     if (missing.length) {
       return res.status(400).json({ success: false, message: `Missing required fields: ${missing.join(', ')}` });
     }
@@ -23,31 +23,39 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
     }
 
-    if (!isDBConnected()) {
-      // In offline/pending mode, create a local session
-      const token = generateToken(`demo_student_${Date.now()}`);
-      return res.status(201).json({
-        success: true,
-        data: {
-          user: { _id: `demo_${Date.now()}`, name, email, role: 'student' },
-          token
-        },
-        source: 'fallback'
-      });
+    const query = [];
+    if (studentId) query.push({ studentId: String(studentId).trim().toUpperCase() });
+    if (email) query.push({ email: email.trim().toLowerCase() });
+
+    if (query.length > 0) {
+      const existingUser = await User.findOne({ $or: query });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'Account with this ID or Email already exists' });
+      }
     }
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Email already registered' });
-    }
+    const userData = {
+      name: name.trim(),
+      password,
+      role: 'student'
+    };
+    if (studentId) userData.studentId = String(studentId).trim().toUpperCase();
+    if (email) userData.email = email.trim().toLowerCase();
 
-    const user = await User.create({ name, email, password, role: 'student' });
+    const user = await User.create(userData);
     const token = generateToken(user._id);
 
     res.status(201).json({
       success: true,
       data: {
-        user: { _id: user._id, name: user.name, email: user.email, role: user.role },
+        user: {
+          _id: user._id,
+          studentId: user.studentId,
+          username: user.username,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        },
         token
       }
     });
@@ -59,72 +67,61 @@ const register = async (req, res, next) => {
 // POST /api/auth/login
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const rawIdentifier = req.body.identifier || req.body.username || req.body.studentId || req.body.email;
+    const { password } = req.body;
 
-    const missing = validateRequired(['email', 'password'], req.body);
-    if (missing.length) {
-      return res.status(400).json({ success: false, message: `Missing required fields: ${missing.join(', ')}` });
+    if (!rawIdentifier || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide both Student ID / Username and Password'
+      });
     }
 
-    // If DB is offline/pending, support demo credentials
-    if (!isDBConnected()) {
-      const lower = email.toLowerCase();
-      const isWarden = lower.includes('warden') || lower === 'warden@vtu.edu' || password === 'warden@vtu';
-      if (isWarden) {
-        const token = generateToken('demo_warden_id');
-        return res.json({
-          success: true,
-          data: {
-            user: { _id: 'demo_warden_id', name: 'VTU Warden Admin', email, role: 'warden' },
-            token
-          },
-          source: 'fallback'
-        });
-      } else {
-        const token = generateToken('demo_student_id');
-        return res.json({
-          success: true,
-          data: {
-            user: { _id: 'demo_student_id', name: 'VTU Student (28892)', email, role: 'student' },
-            token
-          },
-          source: 'fallback'
-        });
-      }
-    }
+    const identifier = String(rawIdentifier).trim();
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // Query user by studentId, username, or email
+    const user = await User.findOne({
+      $or: [
+        { studentId: identifier.toUpperCase() },
+        { studentId: identifier },
+        { username: identifier.toLowerCase() },
+        { email: identifier.toLowerCase() }
+      ]
+    }).select('+password');
+
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials. Please verify your ID/username and password.'
+      });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials. Please verify your ID/username and password.'
+      });
     }
 
     const token = generateToken(user._id);
 
-    res.json({
+    return res.json({
       success: true,
       data: {
-        user: { _id: user._id, name: user.name, email: user.email, role: user.role },
+        user: {
+          _id: user._id,
+          studentId: user.studentId,
+          username: user.username,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        },
         token
       }
     });
   } catch (error) {
-    // If query failed due to DB timeout, allow demo login
-    const lower = (req.body.email || '').toLowerCase();
-    const role = lower.includes('warden') ? 'warden' : 'student';
-    const token = generateToken(`demo_${role}`);
-    res.json({
-      success: true,
-      data: {
-        user: { _id: `demo_${role}`, name: role === 'warden' ? 'Warden Admin' : 'Student', email: req.body.email, role },
-        token
-      },
-      source: 'fallback'
-    });
+    next(error);
   }
 };
 
@@ -133,7 +130,14 @@ const getMe = async (req, res) => {
   res.json({
     success: true,
     data: {
-      user: { _id: req.user._id, name: req.user.name, email: req.user.email, role: req.user.role }
+      user: {
+        _id: req.user._id,
+        studentId: req.user.studentId,
+        username: req.user.username,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role
+      }
     }
   });
 };

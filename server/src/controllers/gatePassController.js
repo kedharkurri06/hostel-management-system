@@ -122,9 +122,13 @@ const getGatePass = async (req, res, next) => {
     }
 
     const pass = await GatePass.findById(req.params.id)
-      .populate('submittedBy', 'name email')
+      .populate('submittedBy', 'name email studentId')
       .populate('reviewedBy', 'name');
     if (!pass) return res.status(404).json({ success: false, message: 'Gate pass not found' });
+
+    if (req.user && req.user.role === 'student' && pass.submittedBy && pass.submittedBy._id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized to view this gate pass' });
+    }
 
     res.json({ success: true, data: pass });
   } catch (error) {
@@ -173,7 +177,7 @@ const createGatePass = async (req, res, next) => {
 
     const pass = await GatePass.create({
       passId,
-      studentName: req.body.studentName,
+      studentName: req.user ? req.user.name : req.body.studentName,
       roomNo: req.body.roomNo,
       block: req.body.block,
       phone: req.body.phone,

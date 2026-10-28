@@ -49,6 +49,11 @@ const getComplaints = async (req, res, next) => {
       ];
     }
 
+    // Role-based scoping: students can only access their own complaints
+    if (req.user && req.user.role === 'student') {
+      filter.submittedBy = req.user._id;
+    }
+
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const total = await Complaint.countDocuments(filter);
     const complaints = await Complaint.find(filter)
@@ -92,6 +97,10 @@ const getComplaint = async (req, res, next) => {
     const complaint = await Complaint.findById(req.params.id);
     if (!complaint) {
       return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    if (req.user && req.user.role === 'student' && complaint.submittedBy && complaint.submittedBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized to view this complaint' });
     }
 
     res.json({ success: true, data: complaint });
@@ -142,7 +151,7 @@ const createComplaint = async (req, res, next) => {
 
     const complaint = await Complaint.create({
       ticketId,
-      studentName: req.body.studentName,
+      studentName: req.user ? req.user.name : req.body.studentName,
       phone: req.body.phone,
       roomNo: req.body.roomNo,
       block: req.body.block,

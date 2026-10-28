@@ -99,8 +99,9 @@
     if (navContainer) {
       navContainer.innerHTML = navItems.map(item => `
         <button
-          onclick="window.switchTab('${item.id}')"
-          className="btn ${state.activeTab === item.id ? 'btn-primary' : 'btn-secondary'}"
+          data-action="switchTab"
+          data-tab="${item.id}"
+          class="btn ${state.activeTab === item.id ? 'btn-primary' : 'btn-secondary'}"
           style="position: relative; padding: 0.55rem 1rem; font-size: 0.88rem; border-radius: 10px;"
         >
           ${item.icon}
