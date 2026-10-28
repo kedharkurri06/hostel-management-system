@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
@@ -66,7 +68,19 @@ app.use('/api/notices', noticeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/gatepasses', gatePassRoutes);
 
-// 404 Handler
+// Serve static frontend assets if built on Render / production
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api') || req.originalUrl === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// 404 Handler for API endpoints
 app.use((req, res) => {
   res.status(404).json({
     success: false,
