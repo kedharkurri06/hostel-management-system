@@ -1,9 +1,8 @@
 services:
   - type: web
-    name: hostelhub-backend
+    name: hostel-management-kk
     env: node
-    rootDir: server
-    buildCommand: npm install
+    buildCommand: npm run build
     startCommand: npm start
     plan: free
     healthCheckPath: /api/health
@@ -11,11 +10,10 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 5000
+        value: 10000
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: FRONTEND_URL
+      - key: CLIENT_URL
         sync: false
-
