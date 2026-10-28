@@ -202,7 +202,7 @@ export const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <button
             type="button"
             onClick={() => {

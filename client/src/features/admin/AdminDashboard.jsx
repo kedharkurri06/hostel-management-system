@@ -97,18 +97,19 @@ export const AdminDashboard = ({
       }}>
         Unassigned / Active Complaint Queue
       </h3>
-      <div className="card" style={{ overflowX: 'auto', border: '1px solid var(--border)' }}>
+      <div className="card table-responsive" style={{ border: '1px solid var(--border)' }}>
         {activeQueue.length === 0 ? (
           <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
             All complaints are resolved! No pending or in-progress tickets in queue.
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+          <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
             <thead>
               <tr style={{
                 borderBottom: '1px solid var(--border)',
                 color: 'var(--muted-foreground)',
-                background: 'var(--muted)'
+                background: 'var(--muted)',
+                whiteSpace: 'nowrap'
               }}>
                 <th style={{ padding: '0.85rem 1rem' }}>Ticket ID</th>
                 <th style={{ padding: '0.85rem 1rem' }}>Room &amp; Block</th>
@@ -121,7 +122,7 @@ export const AdminDashboard = ({
             </thead>
             <tbody>
               {activeQueue.map(c => (
-                <tr key={c._id || c.ticketId} style={{ borderBottom: '1px solid var(--border)' }}>
+                <tr key={c._id || c.ticketId} style={{ borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
                   <td style={{
                     padding: '0.85rem 1rem',
                     fontWeight: 700,

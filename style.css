@@ -379,3 +379,60 @@ nav.nav-links {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-primary);
 }
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES (Root Static Client)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .app-container {
+    padding: 1rem 0.85rem 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  nav.nav-links {
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+
+  .modal-content {
+    padding: 1.25rem;
+    margin: 0.5rem;
+    max-height: 94vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-4 {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
+  .modal-content {
+    padding: 1rem 0.75rem;
+  }
+}

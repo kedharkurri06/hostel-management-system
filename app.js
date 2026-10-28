@@ -157,7 +157,8 @@
             </p>
           </div>
           <button 
-            onclick="window.setComplaintFilter('Emergency')"
+            data-action="setComplaintFilter"
+            data-filter="Emergency"
             class="btn btn-sm"
             style="background: #ef4444; color: #ffffff; border: none; font-weight: 700;"
           >
@@ -179,7 +180,8 @@
       html += `
         <div 
           class="glass-card"
-          onclick="window.setComplaintFilter('${c.key}')"
+          data-action="setComplaintFilter"
+          data-filter="${c.key}"
           style="padding: 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid ${c.color};"
         >
           <div>
@@ -257,7 +259,8 @@
           const isToday = currentDayName === day;
           return `
             <button
-              onclick="window.selectMenuDay('${day}')"
+              data-action="selectMenuDay"
+              data-day="${day}"
               class="glass-card"
               style="
                 padding: 0.75rem 1.25rem;
@@ -297,7 +300,7 @@
                     ${mealData.type}
                   </span>
                   ${state.role === 'warden' ? `
-                    <button onclick="window.openEditMealModal('${state.selectedDay}', '${key}')" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
+                    <button data-action="openEditMealModal" data-day="${state.selectedDay}" data-meal="${key}" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                       Edit Menu
                     </button>
                   ` : ''}
@@ -365,7 +368,7 @@
           <h2 style="font-size: 1.6rem; font-weight: 800; margin: 0;">Room Maintenance & Complaints</h2>
           <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.2rem;">Real-time status tracking for AC, plumbing, electrical, and facility issues.</p>
         </div>
-        <button onclick="window.openComplaintModal()" class="btn btn-primary">
+        <button data-action="openComplaintModal" class="btn btn-primary">
           ${SVG.plus} Register New Complaint
         </button>
       </div>
@@ -379,7 +382,8 @@
               const count = s === 'All' ? state.complaints.length : s === 'Emergency' ? state.complaints.filter(c => c.priority === 'Emergency').length : state.complaints.filter(c => c.status === s).length;
               return `
                 <button
-                  onclick="window.setComplaintFilter('${s}')"
+                  data-action="setComplaintFilter"
+                  data-filter="${s}"
                   class="btn ${isActive ? 'btn-primary' : 'btn-secondary'}"
                   style="padding: 0.45rem 0.85rem; font-size: 0.82rem; border-radius: 8px;"
                 >
@@ -393,17 +397,17 @@
           <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; flex: 1; max-width: 500px;">
             <input
               type="text"
+              id="complaintSearchInput"
               class="input-field"
               placeholder="Search room no, ticket ID, name..."
               style="font-size: 0.85rem; flex: 1;"
               value="${state.searchQuery}"
-              oninput="window.setSearchQuery(this.value)"
             />
 
             <select
+              id="complaintCategorySelect"
               class="select-field"
               style="width: auto; font-size: 0.85rem;"
-              onchange="window.setCategoryFilter(this.value)"
             >
               <option value="All" ${state.categoryFilter === 'All' ? 'selected' : ''}>All Categories</option>
               <option value="AC" ${state.categoryFilter === 'AC' ? 'selected' : ''}>AC / HVAC</option>
@@ -469,7 +473,7 @@
                     ${SVG.phone} Call Resident
                   </a>
                   ${state.role === 'warden' ? `
-                    <button onclick="window.openUpdateComplaintModal('${item.id}')" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
+                    <button data-action="openUpdateComplaintModal" data-id="${item.id}" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                       Update Status
                     </button>
                   ` : `<span style="font-size: 0.75rem; color: var(--text-muted);">Updated by Warden</span>`}
@@ -551,9 +555,11 @@
           <h2 style="font-size: 1.6rem; font-weight: 800; margin: 0;">Hostel Notice Board & Circulars</h2>
           <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.2rem;">Official announcements regarding water cleaning, power maintenance, and mess updates.</p>
         </div>
-        <button onclick="window.openNoticeModal()" class="btn btn-primary">
-          ${SVG.plus} Post Official Circular
-        </button>
+        ${state.role === 'warden' ? `
+          <button data-action="openNoticeModal" class="btn btn-primary">
+            ${SVG.plus} Post Official Circular
+          </button>
+        ` : ''}
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
@@ -605,7 +611,7 @@
         <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
           There are currently <strong style="color: var(--accent-warning);">${pending.length} unassigned tickets</strong> and <strong style="color: #ef4444;">${emergency.length} emergency requests</strong> requiring staff assignment.
         </div>
-        <button onclick="window.setComplaintFilter('Pending')" class="btn btn-primary">
+        <button data-action="setComplaintFilter" data-filter="Pending" class="btn btn-primary">
           Dispatch Staff to Pending (${pending.length})
         </button>
       </div>
@@ -634,7 +640,7 @@
                 <td style="padding: 0.85rem 1rem;">${c.studentName} (${c.phone})</td>
                 <td style="padding: 0.85rem 1rem;"><span class="badge ${c.status === 'Pending' ? 'badge-pending' : 'badge-in-progress'}">${c.status}</span></td>
                 <td style="padding: 0.85rem 1rem;">
-                  <button onclick="window.openUpdateComplaintModal('${c.id}')" class="btn btn-secondary btn-sm">Assign & Resolve</button>
+                  <button data-action="openUpdateComplaintModal" data-id="${c.id}" class="btn btn-secondary btn-sm">Assign & Resolve</button>
                 </td>
               </tr>
             `).join('')}
@@ -692,6 +698,115 @@
 
   // --- MODALS EVENT LISTENERS ---
   function setupGlobalEventListeners() {
+    // Global delegated click listener for data-action elements (CSP-compliant, no inline evals)
+    document.addEventListener('click', (e) => {
+      const actionEl = e.target.closest('[data-action]');
+      if (!actionEl) return;
+
+      const action = actionEl.getAttribute('data-action');
+
+      switch (action) {
+        case 'switchTab': {
+          const tab = actionEl.getAttribute('data-tab');
+          if (tab) {
+            state.activeTab = tab;
+            renderNavbar();
+            renderActiveTab();
+          }
+          break;
+        }
+        case 'toggleRole': {
+          state.role = state.role === 'student' ? 'warden' : 'student';
+          saveState();
+          renderNavbar();
+          renderStats();
+          renderActiveTab();
+          addToast(`Switched view to ${state.role.toUpperCase()}`, 'info');
+          break;
+        }
+        case 'toggleTheme': {
+          state.theme = state.theme === 'dark' ? 'light' : 'dark';
+          applyTheme();
+          saveState();
+          break;
+        }
+        case 'openComplaintModal': {
+          openModal('complaintModal');
+          break;
+        }
+        case 'openNoticeModal': {
+          openModal('noticeModal');
+          break;
+        }
+        case 'closeModal': {
+          const modalId = actionEl.getAttribute('data-modal');
+          if (modalId) closeModal(modalId);
+          break;
+        }
+        case 'setComplaintFilter': {
+          const filter = actionEl.getAttribute('data-filter');
+          if (filter) {
+            state.selectedFilter = filter;
+            if (state.activeTab !== 'complaints') {
+              state.activeTab = 'complaints';
+              renderNavbar();
+            }
+            renderStats();
+            renderActiveTab();
+          }
+          break;
+        }
+        case 'selectMenuDay': {
+          const day = actionEl.getAttribute('data-day');
+          if (day) {
+            state.selectedDay = day;
+            renderFoodMenu();
+          }
+          break;
+        }
+        case 'openEditMealModal': {
+          const day = actionEl.getAttribute('data-day');
+          const mealKey = actionEl.getAttribute('data-meal');
+          if (day && mealKey) {
+            window.openEditMealModal(day, mealKey);
+          }
+          break;
+        }
+        case 'openUpdateComplaintModal': {
+          const id = actionEl.getAttribute('data-id');
+          if (id) {
+            window.openUpdateComplaintModal(id);
+          }
+          break;
+        }
+      }
+    });
+
+    // Delegated input for search
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'complaintSearchInput') {
+        state.searchQuery = e.target.value;
+        renderComplaintsTracker();
+      }
+    });
+
+    // Delegated change for category filter
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'complaintCategorySelect') {
+        state.categoryFilter = e.target.value;
+        renderComplaintsTracker();
+      }
+    });
+
+    // Close modal on clicking backdrop
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+        }
+      });
+    });
+
     // New Complaint Form Submit
     const complaintForm = document.getElementById('newComplaintForm');
     if (complaintForm) {

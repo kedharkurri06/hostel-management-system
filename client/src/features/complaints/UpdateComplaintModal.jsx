@@ -96,7 +96,7 @@ export const UpdateComplaintModal = ({ isOpen, onClose, complaint, onComplaintUp
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+        <div className="modal-actions" style={{ marginTop: '1.25rem' }}>
           <button type="button" className="btn btn-secondary" onClick={onClose} disabled={submitting}>
             Cancel
           </button>

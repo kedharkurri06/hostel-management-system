@@ -125,7 +125,7 @@ export const GatePassTracker = ({ onOpenGatePassModal }) => {
         <input
           type="text"
           className="input-field"
-          style={{ maxWidth: '240px' }}
+          style={{ maxWidth: '300px', flex: '1 1 180px' }}
           placeholder="Search by name, pass ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -224,7 +224,7 @@ export const GatePassTracker = ({ onOpenGatePassModal }) => {
 
               {/* Right: Actions */}
               {isWarden && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                   <button
                     onClick={() => { setReviewingPass(pass); setIsReviewModalOpen(true); }}
                     className="btn btn-primary btn-sm"

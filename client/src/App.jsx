@@ -114,6 +114,25 @@ export const App = () => {
     }
   }, [isAuthenticated, isStudent, isWarden, activeTab]);
 
+  // Mobile drawer keyboard accessibility & scroll lock
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [sidebarOpen]);
+
   // Close sidebar on tab change (mobile)
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -352,15 +371,19 @@ export const App = () => {
           <div className="top-header-right">
             {/* Auth status & actions */}
             {isAuthenticated ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                  <span style={{
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 0 }}>
+                  <span className="top-header-user-text" style={{
                     fontSize: '0.85rem',
                     color: 'var(--sidebar-primary)',
                     fontWeight: 700,
-                    fontFamily: 'var(--font-sans)'
-                  }}>
-                    {user?.name} {user?.studentId ? `(${user.studentId})` : ''}
+                    fontFamily: 'var(--font-sans)',
+                    maxWidth: '130px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }} title={user?.name}>
+                    {user?.name?.split(' ')[0]} {user?.studentId ? `(${user.studentId})` : ''}
                   </span>
                   <span className="badge" style={{
                     background: 'var(--secondary)',
@@ -377,7 +400,7 @@ export const App = () => {
                   onClick={handleLogout}
                   className="btn btn-ghost btn-sm"
                   title="Sign out"
-                  style={{ color: 'var(--destructive)', fontSize: '0.8rem' }}
+                  style={{ color: 'var(--destructive)', fontSize: '0.8rem', padding: '0.35rem 0.6rem' }}
                 >
                   Logout
                 </button>

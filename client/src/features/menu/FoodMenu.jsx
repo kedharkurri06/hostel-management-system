@@ -132,6 +132,7 @@ export const FoodMenu = ({ onOpenEditMeal }) => {
         gap: '0.5rem',
         marginBottom: '1.75rem',
         overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
         paddingBottom: '0.5rem'
       }}>
         {DAYS.map(day => {

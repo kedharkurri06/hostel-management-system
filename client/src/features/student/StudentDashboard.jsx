@@ -27,25 +27,27 @@ export const StudentDashboard = ({
         flexWrap: 'wrap',
         gap: '1.25rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0, flex: '1 1 280px' }}>
           <div style={{
-            width: '64px',
-            height: '64px',
+            width: '56px',
+            height: '56px',
+            minWidth: '56px',
             borderRadius: '50%',
             background: 'var(--primary)',
             color: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.6rem',
+            fontSize: '1.5rem',
             fontWeight: 800,
             fontFamily: 'var(--font-mono)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            flexShrink: 0
           }}>
-            {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+            {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'S'}
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.25rem' }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
               <span className="badge" style={{
                 background: 'var(--sidebar-primary)',
                 color: 'var(--sidebar-primary-foreground)',
@@ -63,20 +65,22 @@ export const StudentDashboard = ({
               </span>
             </div>
             <h2 style={{
-              fontSize: '1.6rem',
+              fontSize: '1.4rem',
               fontWeight: 800,
               margin: '0.2rem 0',
               fontFamily: 'var(--font-serif)',
-              color: 'var(--foreground)'
+              color: 'var(--foreground)',
+              wordBreak: 'break-word'
             }}>
               {user?.name || 'Student Resident'}
             </h2>
             <div style={{
               display: 'flex',
-              gap: '1.2rem',
-              fontSize: '0.88rem',
+              gap: '1rem',
+              fontSize: '0.85rem',
               color: 'var(--muted-foreground)',
-              fontFamily: 'var(--font-mono)'
+              fontFamily: 'var(--font-mono)',
+              flexWrap: 'wrap'
             }}>
               <span><strong>Student ID:</strong> {user?.studentId || 'N/A'}</span>
               {user?.email && <span><strong>Email:</strong> {user.email}</span>}

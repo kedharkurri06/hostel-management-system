@@ -11,7 +11,7 @@ export const Header = ({
   onOpenAuthModal
 }) => {
   const { theme, toggleTheme } = useTheme();
-  const { role, toggleRole, user, isAuthenticated, logout } = useAuth();
+  const { role, user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
     { id: 'menu', label: 'Food Menu', icon: <UtensilsIcon /> },
@@ -81,17 +81,18 @@ export const Header = ({
             + File Complaint
           </button>
 
-          {/* Role Toggle */}
-          <button
-            onClick={toggleRole}
-            className="btn btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '0.55rem 0.85rem' }}
-            title="Switch between Student and Warden View"
-          >
-            <span style={{ textTransform: 'capitalize' }}>
-              {role === 'student' ? 'Student View' : 'Warden View'}
+          {/* Role Badge */}
+          {isAuthenticated && (
+            <span className="badge" style={{
+              background: 'var(--secondary)',
+              color: 'var(--secondary-foreground)',
+              fontSize: '0.75rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              {role}
             </span>
-          </button>
+          )}
 
           {/* Auth Button */}
           {isAuthenticated ? (

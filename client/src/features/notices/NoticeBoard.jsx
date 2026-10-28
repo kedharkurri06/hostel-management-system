@@ -64,9 +64,11 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
             Official announcements regarding water cleaning, power maintenance, and mess schedules.
           </p>
         </div>
-        <button onClick={onOpenNoticeModal} className="btn btn-primary">
-          <PlusIcon /> Post Official Circular
-        </button>
+        {(role === 'warden' || hasWardenPrivileges) && (
+          <button onClick={onOpenNoticeModal} className="btn btn-primary">
+            <PlusIcon /> Post Official Circular
+          </button>
+        )}
       </div>
 
       {loading ? (

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../components/common/Modal';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 
 export const GatePassModal = ({ isOpen, onClose, onGatePassCreated }) => {
   const { addToast } = useToast();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
-    studentName: '',
+    studentName: user?.name || '',
     roomNo: '',
     block: 'Block A (Boys)',
     phone: '',
@@ -16,6 +18,12 @@ export const GatePassModal = ({ isOpen, onClose, onGatePassCreated }) => {
     returnDate: '',
     type: 'Day Pass'
   });
+
+  useEffect(() => {
+    if (isOpen && user?.name && !formData.studentName) {
+      setFormData(prev => ({ ...prev, studentName: user.name }));
+    }
+  }, [isOpen, user]);
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -153,7 +161,7 @@ export const GatePassModal = ({ isOpen, onClose, onGatePassCreated }) => {
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+        <div className="modal-actions" style={{ marginTop: '1.25rem' }}>
           <button type="button" className="btn btn-secondary" onClick={onClose} disabled={submitting}>Cancel</button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
             {submitting ? 'Submitting...' : 'Submit Gate Pass Application'}

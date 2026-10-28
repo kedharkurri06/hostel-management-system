@@ -119,21 +119,21 @@ export const ComplaintsTracker = ({
             alignItems: 'center',
             gap: '0.75rem',
             flexWrap: 'wrap',
-            flex: 1,
+            flex: '1 1 280px',
             maxWidth: '520px'
           }}>
             <input
               type="text"
               className="input-field"
               placeholder="Search room no, ticket ID, name..."
-              style={{ fontSize: '0.85rem', flex: 1 }}
+              style={{ fontSize: '0.85rem', flex: '1 1 160px' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             <select
               className="select-field"
-              style={{ width: 'auto', fontSize: '0.85rem' }}
+              style={{ width: 'auto', minWidth: '130px', flex: '1 1 120px', fontSize: '0.85rem' }}
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
@@ -242,7 +242,7 @@ export const ComplaintsTracker = ({
                     fontSize: '0.82rem',
                     color: 'var(--muted-foreground)',
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
                     gap: '0.5rem',
                     marginBottom: '1rem'
                   }}>

@@ -75,26 +75,28 @@ export const WardenDirectory = () => {
             key={w._id || w.wardenId}
             className="card"
             style={{
-              padding: '1.5rem',
+              padding: '1.25rem',
               display: 'flex',
-              gap: '1.25rem',
+              gap: '1rem',
               alignItems: 'flex-start',
-              border: '1px solid var(--border)'
+              border: '1px solid var(--border)',
+              flexWrap: 'wrap'
             }}
           >
             <img
               src={w.avatar}
               alt={w.name}
               style={{
-                width: '74px',
-                height: '74px',
+                width: '60px',
+                height: '60px',
                 borderRadius: 'var(--radius)',
                 objectFit: 'cover',
                 border: '2px solid var(--primary)',
-                background: 'var(--muted)'
+                background: 'var(--muted)',
+                flexShrink: 0
               }}
             />
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: '180px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
                 <span className="badge" style={{
                   background: 'var(--secondary)',
