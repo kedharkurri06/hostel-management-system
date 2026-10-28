@@ -49,10 +49,20 @@ export const AuthModal = ({ isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div>
-          <span className="badge" style={{ background: 'var(--accent-primary)', color: '#ffffff', marginBottom: '0.4rem' }}>
+          <span className="badge" style={{
+            background: 'var(--sidebar-primary)',
+            color: 'var(--sidebar-primary-foreground)',
+            marginBottom: '0.4rem'
+          }}>
             Portal Access
           </span>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>
+          <h2 style={{
+            fontSize: '1.4rem',
+            fontWeight: 800,
+            margin: 0,
+            fontFamily: 'var(--font-serif)',
+            color: 'var(--foreground)'
+          }}>
             {isRegister ? 'Resident Registration' : 'Account Sign In'}
           </h2>
         </div>
@@ -68,12 +78,12 @@ export const AuthModal = ({ isOpen, onClose }) => {
       {error && (
         <div style={{
           padding: '0.75rem',
-          borderRadius: '8px',
-          background: 'rgba(239, 68, 68, 0.15)',
-          color: '#f87171',
+          borderRadius: 'var(--radius)',
+          background: 'rgba(153, 27, 27, 0.1)',
+          color: 'var(--destructive)',
           fontSize: '0.85rem',
           marginBottom: '1rem',
-          border: '1px solid rgba(239, 68, 68, 0.3)'
+          border: '1px solid rgba(153, 27, 27, 0.25)'
         }}>
           {error}
         </div>
@@ -82,7 +92,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
       <form onSubmit={handleSubmit}>
         {isRegister && (
           <div style={{ marginBottom: '1rem' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Full Name *
             </label>
             <input
@@ -98,7 +108,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
         )}
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Email Address *
           </label>
           <input
@@ -113,7 +123,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Password *
           </label>
           <input
@@ -130,13 +140,13 @@ export const AuthModal = ({ isOpen, onClose }) => {
         {/* Demo Fast-fill Buttons */}
         {!isRegister && (
           <div style={{
-            background: 'var(--bg-primary)',
-            padding: '0.75rem',
-            borderRadius: '8px',
+            background: 'var(--muted)',
+            padding: '0.85rem',
+            borderRadius: 'var(--radius)',
             marginBottom: '1.25rem',
-            border: '1px solid var(--glass-border)'
+            border: '1px solid var(--border)'
           }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: 600 }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem', fontWeight: 600 }}>
               Quick Demo Accounts (from database seed):
             </div>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -170,10 +180,11 @@ export const AuthModal = ({ isOpen, onClose }) => {
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--accent-primary)',
+              color: 'var(--primary)',
               fontSize: '0.82rem',
               cursor: 'pointer',
-              fontWeight: 600
+              fontWeight: 600,
+              fontFamily: 'var(--font-sans)'
             }}
           >
             {isRegister ? 'Already have an account? Sign In' : 'Need an account? Register'}

@@ -48,11 +48,17 @@ export const ComplaintsTracker = ({
         marginBottom: '1.5rem'
       }}>
         <div>
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0 }}>
-            Room Maintenance & Complaints
+          <h2 style={{
+            fontSize: '1.6rem',
+            fontWeight: 800,
+            margin: 0,
+            fontFamily: 'var(--font-serif)',
+            color: 'var(--foreground)'
+          }}>
+            Room Maintenance &amp; Complaints
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
-            Real-time status tracking for AC, plumbing, electrical, and facility issues.
+          <p style={{ color: 'var(--muted-foreground)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
+            Real-time status tracking for AC, plumbing, electrical, and campus hostel facilities.
           </p>
         </div>
         <button onClick={onOpenComplaintModal} className="btn btn-primary">
@@ -61,8 +67,15 @@ export const ComplaintsTracker = ({
       </div>
 
       {/* Filters & Search Bar */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          {/* Status Filter Buttons */}
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             {filterKeys.map(s => {
               const isActive = selectedFilter === s;
@@ -77,16 +90,21 @@ export const ComplaintsTracker = ({
                   key={s}
                   onClick={() => onSelectFilter(s)}
                   className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
-                  style={{ padding: '0.45rem 0.85rem', fontSize: '0.82rem', borderRadius: '8px' }}
+                  style={{
+                    padding: '0.45rem 0.85rem',
+                    fontSize: '0.82rem',
+                    borderRadius: 'var(--radius)'
+                  }}
                 >
                   <span>{s}</span>
                   <span style={{
-                    background: isActive ? '#ffffff' : 'var(--glass-border)',
-                    color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                    padding: '0.1rem 0.4rem',
+                    background: isActive ? 'rgba(255, 255, 255, 0.25)' : 'var(--border)',
+                    color: isActive ? '#ffffff' : 'var(--foreground)',
+                    padding: '0.1rem 0.45rem',
                     borderRadius: '999px',
                     fontSize: '0.72rem',
-                    fontWeight: 800
+                    fontWeight: 800,
+                    fontFamily: 'var(--font-mono)'
                   }}>
                     {count}
                   </span>
@@ -95,7 +113,15 @@ export const ComplaintsTracker = ({
             })}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', flex: 1, maxWidth: '500px' }}>
+          {/* Search & Category Filter */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
+            flex: 1,
+            maxWidth: '520px'
+          }}>
             <input
               type="text"
               className="input-field"
@@ -126,12 +152,12 @@ export const ComplaintsTracker = ({
 
       {/* Complaints Grid */}
       {loading ? (
-        <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+        <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
           Loading complaints...
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-          <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>No Complaints Found</h3>
+        <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+          <h3 style={{ margin: 0, color: 'var(--foreground)', fontFamily: 'var(--font-serif)' }}>No Complaints Found</h3>
           <p style={{ fontSize: '0.9rem', marginTop: '0.3rem' }}>
             There are no room complaints matching your selected criteria.
           </p>
@@ -152,20 +178,32 @@ export const ComplaintsTracker = ({
             return (
               <div
                 key={item._id || item.ticketId}
-                className="glass-card"
+                className="card"
                 style={{
                   padding: '1.5rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  borderLeft: isEmergency && item.status !== 'Resolved' ? '4px solid #ef4444' : undefined
+                  borderLeft: isEmergency && item.status !== 'Resolved'
+                    ? '4px solid var(--destructive)'
+                    : '4px solid var(--border)'
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifySelf: 'stretch', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '0.85rem'
+                  }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-muted)' }}>
-                        {item.ticketId || item.id}
+                      <span style={{
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        color: 'var(--sidebar-primary)',
+                        fontFamily: 'var(--font-mono)'
+                      }}>
+                        #{item.ticketId || item.id}
                       </span>
                       <span className={`priority-tag priority-${item.priority}`}>
                         {item.priority}
@@ -174,61 +212,68 @@ export const ComplaintsTracker = ({
                     <span className={`badge ${badgeClass}`}>{item.status}</span>
                   </div>
 
-                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700 }}>
+                  <h3 style={{
+                    margin: 0,
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-serif)',
+                    color: 'var(--foreground)'
+                  }}>
                     Room {item.roomNo} &bull; {item.block}
                   </h3>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                    Category: <strong>{item.category}</strong>
-                  </span>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.2rem' }}>
+                    Category: <strong style={{ color: 'var(--foreground)' }}>{item.category}</strong>
+                  </div>
 
                   <p style={{
-                    fontSize: '0.9rem',
-                    color: 'var(--text-primary)',
-                    background: 'var(--bg-secondary)',
+                    fontSize: '0.88rem',
+                    color: 'var(--card-foreground)',
+                    background: 'var(--muted)',
                     padding: '0.75rem',
-                    borderRadius: '8px',
+                    borderRadius: 'var(--radius)',
                     margin: '0.75rem 0 1rem 0',
-                    lineHeight: 1.45
+                    lineHeight: 1.45,
+                    border: '1px solid var(--border)'
                   }}>
                     {item.description}
                   </p>
 
                   <div style={{
                     fontSize: '0.82rem',
-                    color: 'var(--text-secondary)',
+                    color: 'var(--muted-foreground)',
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
                     gap: '0.5rem',
                     marginBottom: '1rem'
                   }}>
                     <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Resident:</span> <strong>{item.studentName}</strong>
+                      <span>Resident:</span> <strong style={{ color: 'var(--foreground)' }}>{item.studentName}</strong>
                     </div>
                     <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Contact:</span> <strong>{item.phone}</strong>
+                      <span>Contact:</span> <strong style={{ color: 'var(--foreground)' }}>{item.phone}</strong>
                     </div>
                     <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Time Slot:</span> <strong>{item.visitTimeSlot}</strong>
+                      <span>Time Slot:</span> <strong style={{ color: 'var(--foreground)' }}>{item.visitTimeSlot}</strong>
                     </div>
                     <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Filed:</span> <strong>{createdDate}</strong>
+                      <span>Filed:</span> <strong style={{ color: 'var(--foreground)' }}>{createdDate}</strong>
                     </div>
                   </div>
 
                   <div style={{
                     padding: '0.75rem',
-                    borderRadius: '8px',
-                    background: 'rgba(99, 102, 241, 0.08)',
-                    border: '1px dashed rgba(99, 102, 241, 0.25)',
+                    borderRadius: 'var(--radius)',
+                    background: 'var(--secondary)',
+                    border: '1px solid var(--border)',
                     fontSize: '0.82rem',
                     marginBottom: '1rem'
                   }}>
-                    <div style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>
+                    <div style={{ color: 'var(--secondary-foreground)', fontWeight: 700 }}>
                       Assigned Staff: {item.assignedTo || 'Pending Dispatch'}
                     </div>
                     {item.resolutionNotes && (
-                      <div style={{ color: 'var(--text-secondary)', marginTop: '0.3rem' }}>
-                        <strong>Resolution Note:</strong> {item.resolutionNotes}
+                      <div style={{ color: 'var(--muted-foreground)', marginTop: '0.3rem' }}>
+                        <strong style={{ color: 'var(--foreground)' }}>Resolution Note:</strong> {item.resolutionNotes}
                       </div>
                     )}
                   </div>
@@ -238,7 +283,7 @@ export const ComplaintsTracker = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  borderTop: '1px solid var(--glass-border)',
+                  borderTop: '1px solid var(--border)',
                   paddingTop: '0.85rem'
                 }}>
                   <a href={`tel:${item.phone}`} className="btn btn-secondary btn-sm" style={{ fontSize: '0.78rem' }}>
@@ -254,7 +299,7 @@ export const ComplaintsTracker = ({
                       Update Status
                     </button>
                   ) : (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
                       Updated by Warden
                     </span>
                   )}

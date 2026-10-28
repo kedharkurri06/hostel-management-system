@@ -54,7 +54,15 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div>
           <span className="badge badge-pending" style={{ marginBottom: '0.4rem' }}>Maintenance Dispatch</span>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Register Room Complaint</h2>
+          <h2 style={{
+            fontSize: '1.4rem',
+            fontWeight: 800,
+            margin: 0,
+            fontFamily: 'var(--font-serif)',
+            color: 'var(--foreground)'
+          }}>
+            Register Room Complaint
+          </h2>
         </div>
         <button
           onClick={onClose}
@@ -68,7 +76,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
       <form onSubmit={handleSubmit}>
         <div className="grid-2" style={{ marginBottom: '1rem' }}>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Resident Name *
             </label>
             <input
@@ -82,7 +90,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
             />
           </div>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Mobile Number *
             </label>
             <input
@@ -99,7 +107,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
 
         <div className="grid-2" style={{ marginBottom: '1rem' }}>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Room Number *
             </label>
             <input
@@ -113,7 +121,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
             />
           </div>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Hostel Block *
             </label>
             <select
@@ -131,7 +139,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
 
         <div className="grid-2" style={{ marginBottom: '1rem' }}>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Complaint Category *
             </label>
             <select
@@ -142,15 +150,15 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
             >
               <option value="AC">AC / HVAC Cooling</option>
               <option value="Water">Plumbing / Water Leakage</option>
-              <option value="Electrical">Electrical / Light & Power</option>
+              <option value="Electrical">Electrical / Light &amp; Power</option>
               <option value="Wi-Fi">Wi-Fi / Internet Connectivity</option>
-              <option value="Cleanliness">Room & Washroom Housekeeping</option>
-              <option value="Furniture">Furniture & Carpentry</option>
+              <option value="Cleanliness">Room &amp; Washroom Housekeeping</option>
+              <option value="Furniture">Furniture &amp; Carpentry</option>
               <option value="Pest Control">Pest Control Service</option>
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Priority Level *
             </label>
             <select
@@ -168,7 +176,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Preferred Visit Time Slot
           </label>
           <select
@@ -185,7 +193,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Detailed Problem Description *
           </label>
           <textarea

@@ -40,14 +40,20 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h3 style={{ marginBottom: '0.5rem' }}>Post New Hostel Circular</h3>
-      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+      <h3 style={{
+        marginBottom: '0.5rem',
+        fontFamily: 'var(--font-serif)',
+        color: 'var(--foreground)'
+      }}>
+        Post New Hostel Circular
+      </h3>
+      <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', marginBottom: '1.5rem' }}>
         Broadcast maintenance schedules or general rules to all residents.
       </p>
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Notice Title *
           </label>
           <input
@@ -62,7 +68,7 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
 
         <div className="grid-2" style={{ marginBottom: '1rem' }}>
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Category
             </label>
             <select
@@ -71,15 +77,15 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="Maintenance">Maintenance</option>
-              <option value="Mess & Food">Mess & Food</option>
-              <option value="HVAC">HVAC & Cooling</option>
-              <option value="Security">Security & Rules</option>
+              <option value="Mess & Food">Mess &amp; Food</option>
+              <option value="HVAC">HVAC &amp; Cooling</option>
+              <option value="Security">Security &amp; Rules</option>
               <option value="General">General Announcement</option>
             </select>
           </div>
 
           <div>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+            <label className="form-label">
               Priority Level
             </label>
             <select
@@ -94,7 +100,7 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Notice Content *
           </label>
           <textarea

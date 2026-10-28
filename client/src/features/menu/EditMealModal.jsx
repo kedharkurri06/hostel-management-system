@@ -43,16 +43,20 @@ export const EditMealModal = ({ isOpen, onClose, day, mealKey, mealData, menuId,
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h3 style={{ marginBottom: '0.5rem' }}>
+      <h3 style={{
+        marginBottom: '0.5rem',
+        fontFamily: 'var(--font-serif)',
+        color: 'var(--foreground)'
+      }}>
         Edit {day} - {mealKey?.toUpperCase()} Menu
       </h3>
-      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+      <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', marginBottom: '1.5rem' }}>
         Update dishes served for this meal slot. Separate dishes with commas.
       </p>
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Meal Time Slot
           </label>
           <input
@@ -65,7 +69,7 @@ export const EditMealModal = ({ isOpen, onClose, day, mealKey, mealData, menuId,
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Meal Type Tag
           </label>
           <input
@@ -79,7 +83,7 @@ export const EditMealModal = ({ isOpen, onClose, day, mealKey, mealData, menuId,
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Dishes (comma separated)
           </label>
           <textarea

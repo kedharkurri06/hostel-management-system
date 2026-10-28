@@ -51,11 +51,17 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
         marginBottom: '1.5rem'
       }}>
         <div>
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0 }}>
-            Hostel Notice Board & Circulars
+          <h2 style={{
+            fontSize: '1.6rem',
+            fontWeight: 800,
+            margin: 0,
+            fontFamily: 'var(--font-serif)',
+            color: 'var(--foreground)'
+          }}>
+            Hostel Notice Board &amp; Circulars
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
-            Official announcements regarding water cleaning, power maintenance, and mess updates.
+          <p style={{ color: 'var(--muted-foreground)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
+            Official announcements regarding water cleaning, power maintenance, and mess schedules.
           </p>
         </div>
         <button onClick={onOpenNoticeModal} className="btn btn-primary">
@@ -64,16 +70,16 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
       </div>
 
       {loading ? (
-        <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-          Loading notices...
+        <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+          Loading circulars and announcements...
         </div>
       ) : error ? (
-        <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', color: '#ef4444' }}>
+        <div className="card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--destructive)' }}>
           {error}
         </div>
       ) : notices.length === 0 ? (
-        <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-          <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>No Circulars Posted</h3>
+        <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+          <h3 style={{ margin: 0, color: 'var(--foreground)', fontFamily: 'var(--font-serif)' }}>No Circulars Posted</h3>
           <p style={{ fontSize: '0.9rem', marginTop: '0.3rem' }}>There are currently no active announcements.</p>
         </div>
       ) : (
@@ -83,15 +89,28 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
             return (
               <div
                 key={n._id}
-                className="glass-card"
+                className="card"
                 style={{
                   padding: '1.5rem',
-                  borderLeft: isUrgent ? '4px solid #ef4444' : '4px solid var(--accent-primary)'
+                  borderLeft: isUrgent ? '4px solid var(--destructive)' : '4px solid var(--sidebar-primary)',
+                  borderRadius: 'var(--radius)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '0.6rem',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem'
+                }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', fontSize: '0.72rem' }}>
+                    <span className="badge" style={{
+                      background: 'var(--secondary)',
+                      color: 'var(--secondary-foreground)',
+                      border: '1px solid var(--border)',
+                      fontSize: '0.72rem'
+                    }}>
                       {n.category}
                     </span>
                     {isUrgent && (
@@ -101,14 +120,18 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
                     )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    <div style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--muted-foreground)',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
                       📅 {n.date || (n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent')}
                     </div>
                     {(role === 'warden' || hasWardenPrivileges) && (
                       <button
                         onClick={() => handleDelete(n._id)}
                         className="btn btn-secondary btn-sm"
-                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: '#ef4444' }}
+                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: 'var(--destructive)' }}
                         title="Delete notice"
                       >
                         Delete
@@ -116,10 +139,21 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
                     )}
                   </div>
                 </div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '0 0 0.5rem 0' }}>
+                <h3 style={{
+                  fontSize: '1.2rem',
+                  fontWeight: 700,
+                  margin: '0 0 0.5rem 0',
+                  fontFamily: 'var(--font-serif)',
+                  color: 'var(--foreground)'
+                }}>
                   {n.title}
                 </h3>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                <p style={{
+                  fontSize: '0.92rem',
+                  color: 'var(--muted-foreground)',
+                  lineHeight: 1.55,
+                  margin: 0
+                }}>
                   {n.content}
                 </p>
               </div>

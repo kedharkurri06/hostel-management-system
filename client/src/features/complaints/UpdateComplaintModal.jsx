@@ -43,16 +43,20 @@ export const UpdateComplaintModal = ({ isOpen, onClose, complaint, onComplaintUp
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h3 style={{ marginBottom: '0.5rem' }}>
+      <h3 style={{
+        marginBottom: '0.5rem',
+        fontFamily: 'var(--font-serif)',
+        color: 'var(--foreground)'
+      }}>
         Update Ticket #{complaint?.ticketId} (Room {complaint?.roomNo})
       </h3>
-      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+      <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', marginBottom: '1.5rem' }}>
         Change complaint progress status, assign a maintenance staff member, and record resolution details.
       </p>
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Complaint Status
           </label>
           <select
@@ -67,7 +71,7 @@ export const UpdateComplaintModal = ({ isOpen, onClose, complaint, onComplaintUp
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Assigned Technician / Staff Member
           </label>
           <input
@@ -80,7 +84,7 @@ export const UpdateComplaintModal = ({ isOpen, onClose, complaint, onComplaintUp
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.35rem' }}>
+          <label className="form-label">
             Resolution Notes / Progress Details
           </label>
           <textarea
