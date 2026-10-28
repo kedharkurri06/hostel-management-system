@@ -1,9 +1,13 @@
-// Resolves API Base URL from Vercel / Cloud environment variables or defaults to local proxy '/api'
-const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api').trim();
+// Resolves API Base URL from Vercel / Cloud environment variables or production Render URL
+const defaultBase = import.meta.env.PROD
+  ? 'https://hostel-management-kk.onrender.com/api'
+  : '/api';
+
+const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || defaultBase).trim();
 const cleanedBase = rawBase.replace(/\/+$/, '');
 const API_BASE_URL = cleanedBase.startsWith('http')
   ? (cleanedBase.endsWith('/api') ? cleanedBase : `${cleanedBase}/api`)
-  : (cleanedBase || '/api');
+  : (cleanedBase || defaultBase);
 
 /**
  * Helper to execute fetch requests with JSON parsing and Authorization header
