@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 
 export const NoticeBoard = ({ onOpenNoticeModal }) => {
   const { role, hasWardenPrivileges } = useAuth();
-  const { addToast } = useToast();
+  const { addToast, confirmDialog } = useToast();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +30,15 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this notice?')) return;
+    const confirmed = await confirmDialog({
+      title: 'Delete Notice?',
+      message: 'Are you sure you want to delete this notice circular permanently?',
+      confirmText: 'Delete Notice',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+    if (!confirmed) return;
+
     try {
       await api.notices.delete(id);
       addToast('Notice deleted successfully', 'success', 3000, 'Notice Deleted');

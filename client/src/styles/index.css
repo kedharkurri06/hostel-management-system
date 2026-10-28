@@ -825,6 +825,38 @@ body {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
 }
 
+.icon-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 2px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Confirmation Actions */
+.toast-confirm-actions {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.toast-btn-half {
+  flex: 1;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
 /* Body Content */
 .toast-content-body {
   flex: 1;

@@ -2,8 +2,87 @@ import React from 'react';
 import { useToast } from '../../context/ToastContext';
 
 export const ToastContainer = () => {
-  const { activeToast, isExiting, removeToast } = useToast();
+  const {
+    activeToast,
+    isExiting,
+    removeToast,
+    confirmState,
+    isConfirmExiting,
+    handleConfirmResponse
+  } = useToast();
 
+  // If a confirmation prompt is active, display the interactive Confirm Modal
+  if (confirmState) {
+    const isDanger = confirmState.type === 'danger';
+    return (
+      <div
+        className={`toast-center-backdrop ${isConfirmExiting ? 'exiting' : ''}`}
+        onClick={() => handleConfirmResponse(false)}
+        role="alertdialog"
+        aria-modal="true"
+      >
+        <div
+          className={`toast-center-card ${isConfirmExiting ? 'exiting' : ''} toast-theme-${isDanger ? 'error' : 'info'}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header Row */}
+          <div className="toast-card-header">
+            <span className={`toast-status-badge ${isDanger ? 'badge-warning' : 'badge-info'}`}>
+              CONFIRMATION
+            </span>
+            <button
+              onClick={() => handleConfirmResponse(false)}
+              className="toast-close-btn"
+              aria-label="Cancel"
+              title="Cancel"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Animated Warning Icon Badge */}
+          <div className="toast-icon-wrapper">
+            <div className={`toast-icon-circle ${isDanger ? 'icon-warning' : 'icon-info'}`}>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Title and Message */}
+          <div className="toast-content-body">
+            <h3 className="toast-title">{confirmState.title}</h3>
+            <p className="toast-message">{confirmState.message}</p>
+          </div>
+
+          {/* Dual Action Buttons (Cancel / Confirm) */}
+          <div className="toast-action-footer">
+            <div className="toast-confirm-actions">
+              <button
+                type="button"
+                onClick={() => handleConfirmResponse(false)}
+                className="btn btn-secondary toast-btn-half"
+              >
+                {confirmState.cancelText || 'Cancel'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleConfirmResponse(true)}
+                className={`btn ${isDanger ? 'btn-error' : 'btn-primary'} toast-btn-half`}
+                autoFocus
+              >
+                {confirmState.confirmText || 'Confirm'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise, if an active Toast / Alert is present, render standard notification popup
   if (!activeToast) return null;
 
   const isSuccess = activeToast.type === 'success';

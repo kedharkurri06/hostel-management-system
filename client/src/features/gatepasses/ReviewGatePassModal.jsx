@@ -67,9 +67,9 @@ export const ReviewGatePassModal = ({ isOpen, onClose, gatePass, onReviewed }) =
         <div style={{ marginBottom: '1rem' }}>
           <label className="form-label">Decision *</label>
           <select className="select-field" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="Approved">✅ Approved – Grant Pass</option>
-            <option value="Rejected">❌ Rejected – Deny Pass</option>
-            <option value="Pending">⏳ Keep Pending – Review Later</option>
+            <option value="Approved">Approved – Grant Pass</option>
+            <option value="Rejected">Rejected – Deny Pass</option>
+            <option value="Pending">Keep Pending – Review Later</option>
           </select>
         </div>
 

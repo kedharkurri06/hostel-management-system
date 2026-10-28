@@ -24,14 +24,13 @@ const StatusBadge = ({ status }) => {
       border: `1px solid ${s.border}`,
       letterSpacing: '0.02em'
     }}>
-      {status === 'Pending' ? '⏳' : status === 'Approved' ? '✅' : '❌'} {status}
     </span>
   );
 };
 
 export const GatePassTracker = ({ onOpenGatePassModal }) => {
   const { role, isAuthenticated, user } = useAuth();
-  const { addToast } = useToast();
+  const { addToast, confirmDialog } = useToast();
   const isWarden = role === 'warden';
 
   const [passes, setPasses] = useState([]);
@@ -71,20 +70,27 @@ export const GatePassTracker = ({ onOpenGatePassModal }) => {
   }, [fetchPasses]);
 
   const handleDeletePass = async (id) => {
-    if (!window.confirm('Delete this gate pass record?')) return;
+    const confirmed = await confirmDialog({
+      title: 'Delete Gate Pass?',
+      message: 'Are you sure you want to delete this gate pass record? This action cannot be undone.',
+      confirmText: 'Delete Record',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+    if (!confirmed) return;
+
     try {
       await api.gatePasses.delete(id);
-      addToast('Gate pass deleted.', 'success');
+      addToast('Gate pass deleted.', 'success', 3000, 'Pass Deleted');
       fetchPasses();
     } catch (err) {
-      addToast('Failed to delete gate pass.', 'info');
+      addToast('Failed to delete gate pass.', 'error', 3500, 'Action Failed');
     }
   };
 
   if (!isAuthenticated) {
     return (
       <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔒</div>
         <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--foreground)', marginBottom: '0.5rem' }}>
           Sign In Required
         </h3>
@@ -151,7 +157,6 @@ export const GatePassTracker = ({ onOpenGatePassModal }) => {
         </div>
       ) : passes.length === 0 ? (
         <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🚪</div>
           <div style={{ fontWeight: 600, marginBottom: '0.4rem' }}>No gate passes found</div>
           {!isWarden && (
             <button onClick={() => setIsApplyModalOpen(true)} className="btn btn-primary btn-sm" style={{ marginTop: '0.75rem' }}>

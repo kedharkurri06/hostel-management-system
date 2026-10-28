@@ -8,7 +8,7 @@ import StaffModal from './StaffModal';
 
 export const WardenDirectory = () => {
   const { role, hasWardenPrivileges } = useAuth();
-  const { addToast } = useToast();
+  const { addToast, confirmDialog } = useToast();
   const isWarden = role === 'warden' || hasWardenPrivileges;
 
   const [wardens, setWardens] = useState([]);
@@ -54,9 +54,14 @@ export const WardenDirectory = () => {
   };
 
   const handleDeleteWarden = async (w) => {
-    if (!window.confirm(`Are you sure you want to remove "${w.name}" from the hostel warden directory?`)) {
-      return;
-    }
+    const confirmed = await confirmDialog({
+      title: 'Remove Warden?',
+      message: `Are you sure you want to remove "${w.name}" from the hostel warden directory?`,
+      confirmText: 'Yes, Remove',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     try {
       const id = w._id || w.wardenId;
@@ -79,9 +84,14 @@ export const WardenDirectory = () => {
   };
 
   const handleDeleteStaff = async (st) => {
-    if (!window.confirm(`Are you sure you want to remove technician "${st.name}" (${st.designation}) from the directory?`)) {
-      return;
-    }
+    const confirmed = await confirmDialog({
+      title: 'Remove Technician?',
+      message: `Are you sure you want to remove technician "${st.name}" (${st.designation}) from the directory?`,
+      confirmText: 'Yes, Remove',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     try {
       await api.wardens.deleteStaff(st._id);

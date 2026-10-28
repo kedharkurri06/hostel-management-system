@@ -17,32 +17,28 @@ export const StatsOverview = ({ stats, onSelectFilter }) => {
       count: total,
       color: 'var(--primary)',
       key: 'All',
-      subtitle: 'Recorded issues',
-      icon: '📊'
+      subtitle: 'Recorded issues'
     },
     {
       title: 'Active Pending',
       count: pending,
       color: 'var(--accent-warning)',
       key: 'Pending',
-      subtitle: 'Awaiting assignment',
-      icon: '⏳'
+      subtitle: 'Awaiting assignment'
     },
     {
       title: 'In Progress',
       count: inProgress,
       color: 'var(--sidebar-primary)',
       key: 'In Progress',
-      subtitle: 'Technician dispatched',
-      icon: '🔧'
+      subtitle: 'Technician dispatched'
     },
     {
       title: 'Resolved',
       count: resolved,
       color: 'var(--accent-success)',
       key: 'Resolved',
-      subtitle: `${resolutionRate}% resolution rate`,
-      icon: '✅'
+      subtitle: `${resolutionRate}% resolution rate`
     }
   ];
 
