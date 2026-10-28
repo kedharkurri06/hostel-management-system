@@ -1,10 +1,17 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Resolves API Base URL from Vercel / Cloud environment variables or defaults to local proxy '/api'
+const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api').trim();
+const cleanedBase = rawBase.replace(/\/+$/, '');
+const API_BASE_URL = cleanedBase.startsWith('http')
+  ? (cleanedBase.endsWith('/api') ? cleanedBase : `${cleanedBase}/api`)
+  : (cleanedBase || '/api');
 
 /**
  * Helper to execute fetch requests with JSON parsing and Authorization header
  */
 async function request(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  // Ensure endpoint starts with a slash
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE_URL}${normalizedEndpoint}`;
   const token = localStorage.getItem('hostel_token');
 
   const headers = {
@@ -75,12 +82,15 @@ export const api = {
     update: (id, mealData) => request(`/menu/${id}`, { method: 'PATCH', body: mealData })
   },
 
-  // Wardens Directory
+  // Wardens Directory & Staff
   wardens: {
     get: () => request('/wardens'),
     create: (data) => request('/wardens', { method: 'POST', body: data }),
     update: (id, updates) => request(`/wardens/${id}`, { method: 'PATCH', body: updates }),
-    delete: (id) => request(`/wardens/${id}`, { method: 'DELETE' })
+    delete: (id) => request(`/wardens/${id}`, { method: 'DELETE' }),
+    createStaff: (data) => request('/wardens/staff', { method: 'POST', body: data }),
+    updateStaff: (id, updates) => request(`/wardens/staff/${id}`, { method: 'PATCH', body: updates }),
+    deleteStaff: (id) => request(`/wardens/staff/${id}`, { method: 'DELETE' })
   },
 
   // Notice Board

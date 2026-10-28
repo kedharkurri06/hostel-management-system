@@ -16,12 +16,12 @@ export const ReviewGatePassModal = ({ isOpen, onClose, gatePass, onReviewed }) =
     try {
       const res = await api.gatePasses.review(gatePass._id, { status, wardenRemarks });
       if (res.success) {
-        addToast(`Gate Pass #${gatePass.passId} ${status.toLowerCase()} successfully.`, 'success');
+        addToast(`Gate Pass #${gatePass.passId} ${status.toLowerCase()} successfully.`, 'success', 3000, 'Pass Reviewed');
         onReviewed && onReviewed(res.data);
         onClose();
       }
     } catch (err) {
-      addToast(err.message || 'Failed to update gate pass. Warden authorization required.', 'info');
+      addToast(err.message || 'Failed to update gate pass. Warden authorization required.', 'error', 3500, 'Review Failed');
     } finally {
       setSubmitting(false);
     }

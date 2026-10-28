@@ -36,7 +36,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
     try {
       const res = await api.complaints.create(formData);
       if (res.success && res.data) {
-        addToast(`Ticket #${res.data.ticketId} submitted successfully!`, 'success');
+        addToast(`Ticket #${res.data.ticketId} submitted successfully!`, 'success', 3000, 'Complaint Filed');
         setFormData({
           studentName: '',
           phone: '',
@@ -51,7 +51,7 @@ export const ComplaintModal = ({ isOpen, onClose, onComplaintCreated }) => {
         onClose();
       }
     } catch (err) {
-      addToast(err.message || 'Failed to submit complaint', 'info');
+      addToast(err.message || 'Failed to submit complaint', 'error', 3500, 'Submission Failed');
     } finally {
       setSubmitting(false);
     }

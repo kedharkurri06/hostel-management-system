@@ -30,27 +30,25 @@ export const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
     try {
       if (isRegister) {
         const res = await register(formData.name, formData.email, formData.password, formData.studentId);
-        addToast(`Welcome, ${formData.name}! Account registered.`, 'success');
+        addToast(`Welcome, ${formData.name}! Account registered successfully.`, 'success', 3200, 'Registration Success');
         if (onLoginSuccess && res.data && res.data.user) {
           onLoginSuccess(res.data.user.role);
         }
       } else {
         const res = await login(formData.identifier, formData.password);
-        addToast(`Welcome, ${res.data.user.name}! Signed in successfully.`, 'success');
+        addToast(`Signed in successfully! Welcome, ${res.data.user.name}.`, 'success', 3200, 'Login Successful');
         if (onLoginSuccess && res.data && res.data.user) {
           onLoginSuccess(res.data.user.role);
         }
       }
       onClose();
     } catch (err) {
-      setError(err.message || 'Authentication failed. Please check your credentials.');
+      const msg = err.message || 'Authentication failed. Please verify your credentials.';
+      setError(msg);
+      addToast(msg, 'error', 3500, isRegister ? 'Registration Failed' : 'Login Unsuccessful');
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleDemoFill = (identifier, password) => {
-    setFormData(prev => ({ ...prev, identifier, password }));
   };
 
   return (
@@ -168,39 +166,6 @@ export const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
             required
           />
         </div>
-
-        {/* Demo Fast-fill Buttons */}
-        {!isRegister && (
-          <div style={{
-            background: 'var(--muted)',
-            padding: '0.85rem',
-            borderRadius: 'var(--radius)',
-            marginBottom: '1.25rem',
-            border: '1px solid var(--border)'
-          }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem', fontWeight: 600 }}>
-              Demo Accounts:
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => handleDemoFill('VTU27571', 'VTU27571')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem' }}
-              >
-                👨‍🎓 Student (VTU27571)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoFill('warden@vtu', 'warden@123')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem' }}
-              >
-                🛡️ Warden (warden@vtu)
-              </button>
-            </div>
-          </div>
-        )}
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <button

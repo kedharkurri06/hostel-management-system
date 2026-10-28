@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import { SunIcon, MoonIcon, UtensilsIcon, WrenchIcon, UsersIcon, BellIcon, DashboardIcon } from '../common/Icons';
 
 export const Header = ({
@@ -12,6 +13,12 @@ export const Header = ({
 }) => {
   const { theme, toggleTheme } = useTheme();
   const { role, user, isAuthenticated, logout } = useAuth();
+  const { addToast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    addToast('You have been signed out successfully.', 'info', 2800, 'Signed Out');
+  };
 
   const navItems = [
     { id: 'menu', label: 'Food Menu', icon: <UtensilsIcon /> },
@@ -101,7 +108,7 @@ export const Header = ({
                 {user?.name?.split(' ')[0]} ({user?.role})
               </span>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="btn btn-secondary"
                 style={{ fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}
                 title="Sign out"

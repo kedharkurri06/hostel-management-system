@@ -30,12 +30,12 @@ export const UpdateComplaintModal = ({ isOpen, onClose, complaint, onComplaintUp
         resolutionNotes
       });
       if (res.success && res.data) {
-        addToast(`Ticket #${complaint.ticketId} status updated to ${status}`, 'success');
+        addToast(`Ticket #${complaint.ticketId} status updated to ${status}`, 'success', 3000, 'Ticket Updated');
         onComplaintUpdated(res.data);
         onClose();
       }
     } catch (err) {
-      addToast(err.message || 'Failed to update ticket. (Warden authorization required)', 'info');
+      addToast(err.message || 'Failed to update ticket. (Warden authorization required)', 'error', 3500, 'Update Failed');
     } finally {
       setSubmitting(false);
     }

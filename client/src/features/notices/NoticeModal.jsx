@@ -23,7 +23,7 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
       });
 
       if (res.success && res.data) {
-        addToast(`Circular published: "${res.data.title}"`, 'success');
+        addToast(`Circular published: "${res.data.title}"`, 'success', 3000, 'Notice Published');
         setTitle('');
         setCategory('Maintenance');
         setPriority('Normal');
@@ -32,7 +32,7 @@ export const NoticeModal = ({ isOpen, onClose, onNoticeCreated }) => {
         onClose();
       }
     } catch (err) {
-      addToast(err.message || 'Failed to post circular. (Warden authorization required)', 'info');
+      addToast(err.message || 'Failed to post circular. (Warden authorization required)', 'error', 3500, 'Post Failed');
     } finally {
       setSubmitting(false);
     }

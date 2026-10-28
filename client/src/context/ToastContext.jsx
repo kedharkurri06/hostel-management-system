@@ -1,25 +1,44 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 
 const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
-  const [toasts, setToasts] = useState([]);
+  const [activeToast, setActiveToast] = useState(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const timerRef = useRef(null);
 
-  const addToast = useCallback((message, type = 'success') => {
-    const id = Date.now() + Math.random();
-    setToasts(prev => [...prev, { id, message, type }]);
-
+  const removeToast = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsExiting(true);
     setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 4000);
+      setActiveToast(null);
+      setIsExiting(false);
+    }, 300); // 0.3s smooth exit animation
   }, []);
 
-  const removeToast = useCallback((id) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
-  }, []);
+  const addToast = useCallback((message, type = 'success', duration = 3200, title = '') => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+
+    setIsExiting(false);
+    const id = Date.now() + Math.random();
+    const newToast = { id, message, type, duration, title };
+    setActiveToast(newToast);
+
+    if (duration > 0) {
+      timerRef.current = setTimeout(() => {
+        removeToast();
+      }, duration);
+    }
+  }, [removeToast]);
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={{ activeToast, isExiting, addToast, removeToast }}>
       {children}
     </ToastContext.Provider>
   );
@@ -30,3 +49,5 @@ export const useToast = () => {
   if (!context) throw new Error('useToast must be used within a ToastProvider');
   return context;
 };
+
+export default ToastContext;

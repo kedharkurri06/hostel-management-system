@@ -37,7 +37,7 @@ export const GatePassModal = ({ isOpen, onClose, onGatePassCreated }) => {
     try {
       const res = await api.gatePasses.create(formData);
       if (res.success && res.data) {
-        addToast(`Gate Pass #${res.data.passId} submitted! Awaiting warden approval.`, 'success');
+        addToast(`Gate Pass #${res.data.passId} submitted! Awaiting warden approval.`, 'success', 3000, 'Pass Applied');
         setFormData({
           studentName: '',
           roomNo: '',
@@ -53,7 +53,7 @@ export const GatePassModal = ({ isOpen, onClose, onGatePassCreated }) => {
         onClose();
       }
     } catch (err) {
-      addToast(err.message || 'Failed to submit gate pass application. Please sign in first.', 'info');
+      addToast(err.message || 'Failed to submit gate pass application. Please sign in first.', 'error', 3500, 'Application Failed');
     } finally {
       setSubmitting(false);
     }

@@ -13,34 +13,47 @@ const gatePassRoutes = require('./routes/gatePassRoutes');
 
 const app = express();
 
-// CORS configuration
-const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
+// CORS configuration supporting local dev and cloud deployments (Vercel & Render)
+const configuredOrigins = [
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
   'http://localhost:5173',
+  'http://localhost:3000',
   'http://127.0.0.1:5173'
-];
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Permissive in dev if needed, or matched origin
+    // Allow non-browser requests (mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // Allow configured origins
+    if (configuredOrigins.includes(origin)) return callback(null, true);
+
+    // Allow any Vercel deployment preview or production domain (*.vercel.app)
+    if (/\.vercel\.app$/.test(origin) || /localhost:[0-9]+$/.test(origin)) {
+      return callback(null, true);
     }
+
+    // Allow all other clients while respecting credentials
+    callback(null, true);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check
-app.get('/api/health', (req, res) => {
+// Root & Health Checks for Render / Cloud Uptime Monitoring
+app.get(['/', '/health', '/api/health'], (req, res) => {
   res.json({
     status: 'ok',
+    service: 'HostelHub API Backend',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: Math.round(process.uptime())
   });
 });
 

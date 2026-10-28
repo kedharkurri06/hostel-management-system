@@ -4,15 +4,10 @@ const { connectDB } = require('./config/db');
 
 const PORT = process.env.PORT || 5000;
 
-// Start Express server immediately so port 5000 is always online
-const server = app.listen(PORT, () => {
-  console.log(`=================================================`);
-  console.log(`🚀 HostelHub Server running on http://localhost:${PORT}`);
-  console.log(`👉 API Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`👉 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`=================================================`);
+// Start Express server binding to 0.0.0.0 for cloud hosting compatibility (Render, Railway, Fly)
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`HostelHub Server running on http://localhost:${PORT}`);
   
-  // Connect to MongoDB
   connectDB();
 });
 

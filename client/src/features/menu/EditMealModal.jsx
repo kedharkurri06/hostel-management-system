@@ -31,11 +31,11 @@ export const EditMealModal = ({ isOpen, onClose, day, mealKey, mealData, menuId,
         type,
         items
       });
-      addToast(`Updated ${day} ${mealKey.toUpperCase()} menu!`, 'success');
+      addToast(`Updated ${day} ${mealKey.toUpperCase()} menu!`, 'success', 3000, 'Menu Saved');
       onUpdated();
       onClose();
     } catch (err) {
-      addToast(err.message || 'Failed to update meal slot', 'info');
+      addToast(err.message || 'Failed to update meal slot', 'error', 3500, 'Save Failed');
     } finally {
       setSubmitting(false);
     }

@@ -33,10 +33,10 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
     if (!window.confirm('Are you sure you want to delete this notice?')) return;
     try {
       await api.notices.delete(id);
-      addToast('Notice deleted successfully', 'success');
+      addToast('Notice deleted successfully', 'success', 3000, 'Notice Deleted');
       setNotices(prev => prev.filter(n => n._id !== id));
     } catch (err) {
-      addToast(err.message || 'Failed to delete notice', 'info');
+      addToast(err.message || 'Failed to delete notice', 'error', 3500, 'Action Failed');
     }
   };
 
