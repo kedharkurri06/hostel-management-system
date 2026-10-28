@@ -189,29 +189,7 @@ const staffSeed = [
   { name: 'Main Security Control', designation: '24/7 Security Gate', phone: '+91 98555 66778', availability: '24x7 Available' }
 ];
 
-const noticeSeed = [
-  {
-    title: 'Scheduled Water Tank Cleaning & Pipe Maintenance',
-    date: 'July 31, 2026',
-    category: 'Maintenance',
-    priority: 'High',
-    content: 'Water supply to Block A and Block B will be suspended from 10:00 AM to 2:00 PM for annual overhead tank disinfection. Please store required water in advance.'
-  },
-  {
-    title: 'Mess Menu Special Request Drive & Survey',
-    date: 'July 29, 2026',
-    category: 'Mess & Food',
-    priority: 'Normal',
-    content: 'Students can submit special dish requests for Sunday grand lunches through the mess feedback box in the dining hall.'
-  },
-  {
-    title: 'AC Filter Servicing Drive - Block A & B',
-    date: 'July 28, 2026',
-    category: 'HVAC',
-    priority: 'Normal',
-    content: 'Technicians will conduct room-by-room AC filter cleaning this weekend. Please keep your rooms accessible during your selected time slots.'
-  }
-];
+const noticeSeed = [];
 
 const seedDB = async () => {
   const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hostel_management';

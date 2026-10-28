@@ -1,11 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../../services/api';
+import { useToast } from '../../context/ToastContext';
+import { PlusIcon } from '../../components/common/Icons';
+import NoticeModal from '../notices/NoticeModal';
 
 export const AdminDashboard = ({
   stats,
   complaints = [],
   onSetComplaintFilter,
-  onOpenUpdateComplaintModal
+  onOpenUpdateComplaintModal,
+  onNavigate
 }) => {
+  const { addToast, confirmDialog } = useToast();
+  const [notices, setNotices] = useState([]);
+  const [loadingNotices, setLoadingNotices] = useState(true);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+
+  const fetchNotices = async () => {
+    try {
+      setLoadingNotices(true);
+      const res = await api.notices.getAll();
+      if (res.success && res.data) {
+        setNotices(res.data);
+      }
+    } catch (err) {
+      console.error('Failed to load notices on admin dashboard:', err.message);
+    } finally {
+      setLoadingNotices(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  const handleNoticeCreated = (newNotice) => {
+    if (newNotice) {
+      setNotices(prev => [newNotice, ...prev]);
+    }
+    fetchNotices();
+  };
+
+  const handleDeleteNotice = async (n) => {
+    const id = n._id || n.id;
+    const title = n.title || 'this notice';
+    const confirmed = await confirmDialog({
+      title: 'Delete Notice Circular?',
+      message: `Are you sure you want to delete "${title}"? This circular will be permanently removed for all hostel residents.`,
+      confirmText: 'Delete Circular',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+    if (!confirmed) return;
+
+    try {
+      await api.notices.delete(id);
+      addToast('Notice circular deleted successfully.', 'success', 3000, 'Notice Deleted');
+      setNotices(prev => prev.filter(item => (item._id !== id && item.id !== id)));
+    } catch (err) {
+      addToast(err.message || 'Failed to delete notice circular.', 'error', 3500, 'Action Failed');
+    }
+  };
   const {
     total = 0,
     pending = 0,
@@ -162,6 +217,156 @@ export const AdminDashboard = ({
           </table>
         )}
       </div>
+
+      {/* Hostel Notice Board & Circulars Section */}
+      <div style={{ marginTop: '2.5rem', marginBottom: '1.5rem' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          marginBottom: '1rem'
+        }}>
+          <div>
+            <h3 style={{
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              margin: 0,
+              fontFamily: 'var(--font-serif)',
+              color: 'var(--foreground)'
+            }}>
+              Hostel Notice Board &amp; Circulars
+            </h3>
+            <p style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem', margin: '0.2rem 0 0 0' }}>
+              Broadcast urgent maintenance alerts, mess changes, or rules directly to residents
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            {onNavigate && (
+              <button
+                type="button"
+                onClick={() => onNavigate('notices')}
+                className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.82rem' }}
+              >
+                View Public Board →
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsNoticeModalOpen(true)}
+              className="btn btn-primary btn-sm"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.82rem' }}
+            >
+              <PlusIcon /> Post New Notice
+            </button>
+          </div>
+        </div>
+
+        {loadingNotices ? (
+          <div className="card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+            Loading active circulars...
+          </div>
+        ) : notices.length === 0 ? (
+          <div className="card" style={{ padding: '2.5rem 1.5rem', textAlign: 'center', color: 'var(--muted-foreground)', border: '1px dashed var(--border)' }}>
+            <h4 style={{ margin: 0, color: 'var(--foreground)', fontFamily: 'var(--font-serif)', fontSize: '1rem' }}>No Active Circulars</h4>
+            <p style={{ fontSize: '0.85rem', marginTop: '0.3rem', marginBottom: '1rem' }}>
+              All mock notices have been cleared. Post a new circular to announce maintenance or rules.
+            </p>
+            <button
+              onClick={() => setIsNoticeModalOpen(true)}
+              className="btn btn-secondary btn-sm"
+            >
+              + Create First Notice
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {notices.map(n => {
+              const isUrgent = n.priority === 'High';
+              return (
+                <div
+                  key={n._id || n.id}
+                  className="card"
+                  style={{
+                    padding: '1.25rem',
+                    borderLeft: isUrgent ? '4px solid var(--destructive)' : '4px solid var(--sidebar-primary)',
+                    borderRadius: 'var(--radius)'
+                  }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '0.5rem',
+                    flexWrap: 'wrap',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span className="badge" style={{
+                        background: 'var(--secondary)',
+                        color: 'var(--secondary-foreground)',
+                        border: '1px solid var(--border)',
+                        fontSize: '0.72rem'
+                      }}>
+                        {n.category}
+                      </span>
+                      {isUrgent && (
+                        <span className="badge badge-emergency" style={{ fontSize: '0.68rem' }}>
+                          URGENT
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{
+                        fontSize: '0.8rem',
+                        color: 'var(--muted-foreground)',
+                        fontFamily: 'var(--font-mono)'
+                      }}>
+                        📅 {n.date || (n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recent')}
+                      </div>
+                      <button
+                        onClick={() => handleDeleteNotice(n)}
+                        className="btn btn-secondary btn-sm"
+                        style={{ padding: '0.2rem 0.55rem', fontSize: '0.75rem', color: 'var(--destructive)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                        title="Delete notice circular"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </div>
+                  <h4 style={{
+                    fontSize: '1.05rem',
+                    fontWeight: 700,
+                    margin: '0 0 0.35rem 0',
+                    fontFamily: 'var(--font-serif)',
+                    color: 'var(--foreground)'
+                  }}>
+                    {n.title}
+                  </h4>
+                  <p style={{
+                    fontSize: '0.88rem',
+                    color: 'var(--muted-foreground)',
+                    lineHeight: 1.5,
+                    margin: 0
+                  }}>
+                    {n.content}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Embedded Notice Modal */}
+      <NoticeModal
+        isOpen={isNoticeModalOpen}
+        onClose={() => setIsNoticeModalOpen(false)}
+        onNoticeCreated={handleNoticeCreated}
+      />
     </div>
   );
 };

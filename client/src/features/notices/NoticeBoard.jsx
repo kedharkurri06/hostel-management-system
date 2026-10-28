@@ -3,6 +3,7 @@ import api from '../../services/api';
 import { PlusIcon } from '../../components/common/Icons';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import NoticeModal from './NoticeModal';
 
 export const NoticeBoard = ({ onOpenNoticeModal }) => {
   const { role, hasWardenPrivileges } = useAuth();
@@ -10,6 +11,7 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchNotices = async () => {
     try {
@@ -29,11 +31,25 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
     fetchNotices();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    if (onOpenNoticeModal) onOpenNoticeModal();
+  };
+
+  const handleNoticeCreated = (createdNotice) => {
+    if (createdNotice) {
+      setNotices(prev => [createdNotice, ...prev]);
+    }
+    fetchNotices();
+  };
+
+  const handleDelete = async (n) => {
+    const id = n._id || n.id;
+    const title = n.title || 'this notice';
     const confirmed = await confirmDialog({
-      title: 'Delete Notice?',
-      message: 'Are you sure you want to delete this notice circular permanently?',
-      confirmText: 'Delete Notice',
+      title: 'Delete Notice Circular?',
+      message: `Are you sure you want to delete "${title}"? This circular will be permanently removed for all residents.`,
+      confirmText: 'Delete Circular',
       cancelText: 'Cancel',
       type: 'danger'
     });
@@ -41,10 +57,10 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
 
     try {
       await api.notices.delete(id);
-      addToast('Notice deleted successfully', 'success', 3000, 'Notice Deleted');
-      setNotices(prev => prev.filter(n => n._id !== id));
+      addToast('Notice circular deleted successfully.', 'success', 3000, 'Notice Deleted');
+      setNotices(prev => prev.filter(item => (item._id !== id && item.id !== id)));
     } catch (err) {
-      addToast(err.message || 'Failed to delete notice', 'error', 3500, 'Action Failed');
+      addToast(err.message || 'Failed to delete notice circular.', 'error', 3500, 'Action Failed');
     }
   };
 
@@ -73,7 +89,7 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
           </p>
         </div>
         {(role === 'warden' || hasWardenPrivileges) && (
-          <button onClick={onOpenNoticeModal} className="btn btn-primary">
+          <button onClick={handleOpenModal} className="btn btn-primary">
             <PlusIcon /> Post Official Circular
           </button>
         )}
@@ -98,7 +114,7 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
             const isUrgent = n.priority === 'High';
             return (
               <div
-                key={n._id}
+                key={n._id || n.id}
                 className="card"
                 style={{
                   padding: '1.5rem',
@@ -139,10 +155,10 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
                     </div>
                     {(role === 'warden' || hasWardenPrivileges) && (
                       <button
-                        onClick={() => handleDelete(n._id)}
+                        onClick={() => handleDelete(n)}
                         className="btn btn-secondary btn-sm"
                         style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', color: 'var(--destructive)' }}
-                        title="Delete notice"
+                        title="Delete notice circular"
                       >
                         Delete
                       </button>
@@ -171,6 +187,13 @@ export const NoticeBoard = ({ onOpenNoticeModal }) => {
           })}
         </div>
       )}
+
+      {/* Embedded Notice Creation Modal */}
+      <NoticeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onNoticeCreated={handleNoticeCreated}
+      />
     </div>
   );
 };

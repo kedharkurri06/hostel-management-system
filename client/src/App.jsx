@@ -493,6 +493,7 @@ export const App = () => {
                 complaints={complaints}
                 onSetComplaintFilter={handleSelectFilter}
                 onOpenUpdateComplaintModal={handleOpenUpdateComplaintModal}
+                onNavigate={handleTabChange}
               />
             )}
           </main>
